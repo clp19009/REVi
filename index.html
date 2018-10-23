@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>koyoscore</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>koyoscore</h1>
+        <form class="form-inline">
+            <div class="form-group">
+                <label class="roomLabel" for="rooms"></label>
+                <select class="form-control" id="rooms">
+                    <option value="room01">Team01</option>
+                    <option value="room02">Team02</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="sendButton">Join</button>
+        </form>
+
+        <!-- score control -->
+        <div>
+            <br><br>
+            <input type="button" value="+1" name="+1" onclick="plus1();" style="WIDTH: 250px; HEIGHT: 100px">
+            &nbsp;&nbsp;
+            <input type="button" value="-1" name="-1" onclick="minus1();" style="WIDTH: 100px; HEIGHT: 100px">
+            &nbsp;&nbsp;
+            <input type="button" value="Reset" name="reset" onclick="reset();" style="WIDTH: 100px; HEIGHT: 100px">
+            <br><br>
+            <input type="button" value="+10" name="+10" onclick="plus10();" style="WIDTH: 250px; HEIGHT: 100px">
+            &nbsp;&nbsp;
+            <input type="button" value="-10" name="-10" onclick="minus10();" style="WIDTH: 100px; HEIGHT: 100px">
+            &nbsp;&nbsp;
+            <input type="button" value="back" name="init" onclick="back()" style="WIDTH: 100px; HEIGHT: 100px">
+            <br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br>
+        </div>
+        <div id="score1"></div>
+        <br><br><br><br>
+    </div>
+
+    <script type="text/javascript">
+        var socket = io.connect();
+        var isEnter = false;
+        var name = '';
+
+        socket.on("server_to_client", function (data) { write_score(data.value) });
+        function write_score(score) {
+            // $("#score1").append("<div><h1>" + score + "</h1></div>");
+            document.getElementById("score1").innerHTML = '<div><h1><p align="left"><span style="color: #000000; font-size: 700px;">' + score + '</h1></p></div>';
+        }
+
+        $("form").submit(function (e) {
+            var selectRoom = $("#rooms").val();
+            if (!isEnter) {
+                socket.emit("client_to_server_join", { value: selectRoom });
+                changeLabel();
+                init();
+            }
+            e.preventDefault();
+        });
+
+        function changeLabel() {
+            $("#teams").prop("disabled", true);
+            $("button").text("Joined!");
+            isEnter = true;
+        }
+
+        function plus1() {
+            socket.emit("client_to_server", { value: 1 });
+        }
+
+        function plus10() {
+            socket.emit("client_to_server", { value: 10 });
+        }
+
+        function minus1() {
+            socket.emit("client_to_server", { value: -1 });
+        }
+
+        function minus10() {
+            socket.emit("client_to_server", { value: -10 });
+        }
+
+        function reset() {
+            socket.emit("client_to_server", { value: "reset" });
+        }
+
+        function init() {
+            socket.emit("client_to_server", { value: "init" });
+        }
+
+        function back() {
+            socket.emit("client_to_server", { value: "back" });
+        }
+
+    </script>
+</body>
+</html>
