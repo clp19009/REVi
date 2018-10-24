@@ -27,9 +27,11 @@ io.sockets.on('connection', function (socket) {
             if (data.value == "reset") {
                 score = 0;
                 scores.push(score);
-            } else if (scores.length > 3 && data.value == "back") {
-                score = scores[scores.length - 2];
-                scores.pop();
+            } else if (data.value == "back") {
+                if (scores.length > 3) {
+                    score = scores[scores.length - 2];
+                    scores.pop();
+                }
             } else {
                 score += data.value;
                 scores.push(score);
