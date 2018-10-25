@@ -4,9 +4,15 @@
     <meta charset="utf-8">
     <title>koyoscore</title>
     <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <style type="text/css">
+        body {background-color: black;}
+        h1 {font-size: 70px; color: white;}
+        h2 {color: white;}
+    </style>
 </head>
 <body>
     <div class="container">
@@ -20,29 +26,57 @@
                 </select>
             </div>
             <button type="submit" class="btn btn-primary" id="sendButton">Join</button>
+            <br>
+            <div id="score4check"></div>
+            <br />
+            <br />
         </form>
 
         <!-- score control -->
-        <div>
-            <br><br>
-            <input type="button" value="+1" name="+1" onclick="plus1();" style="WIDTH: 250px; HEIGHT: 100px">
-            &nbsp;&nbsp;
-            <input type="button" value="-1" name="-1" onclick="minus1();" style="WIDTH: 100px; HEIGHT: 100px">
-            &nbsp;&nbsp;
-            <input type="button" value="Reset" name="reset" onclick="reset();" style="WIDTH: 100px; HEIGHT: 100px">
-            <br><br>
-            <input type="button" value="+10" name="+10" onclick="plus10();" style="WIDTH: 250px; HEIGHT: 100px">
-            &nbsp;&nbsp;
-            <input type="button" value="-10" name="-10" onclick="minus10();" style="WIDTH: 100px; HEIGHT: 100px">
-            &nbsp;&nbsp;
-            <input type="button" value="back" name="back" onclick="back()" style="WIDTH: 100px; HEIGHT: 100px">
-            <br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br>
+        <div style="height: 1310px">
+            <input type="button" value="Reset" name="reset" onclick="reset();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="back" name="back" onclick="back()" style="width: 350px; height: 200px; font: 70pt Arial"> <br />
+            <br>
+            <input type="button" value="+1" name="+1" onclick="plus1();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="-1" name="-1" onclick="minus1();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
+            <br>
+            <br>
+            <input type="button" value="+10" name="+10" onclick="plus10();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="-10" name="-10" onclick="minus10();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
         </div>
         <div id="score1"></div>
-        <br><br><br><br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
     </div>
 
     <script type="text/javascript">
@@ -53,7 +87,8 @@
         socket.on("server_to_client", function (data) { write_score(data.value) });
         function write_score(score) {
             // $("#score1").append("<div><h1>" + score + "</h1></div>");
-            document.getElementById("score1").innerHTML = '<div><h1><p align="left"><span style="color: #000000; font-size: 700px;">' + score + '</h1></p></div>';
+            document.getElementById("score1").innerHTML = '<div><h1><p align="center"><span style="font-size: 700px;">' + score + '</h1></p></div>';
+            document.getElementById("score4check").innerHTML = '<div><h2>Current score: </h2><h1><p align="center"><span style="font-size: 65px;">' + score + '</h1></p></div>';
         }
 
         $("form").submit(function (e) {
