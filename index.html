@@ -8,20 +8,6 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <style type="text/css">
-        body {
-            background-color: black;
-        }
-
-        h1 {
-            font-size: 70px;
-            color: white;
-        }
-
-        h2 {
-            color: white;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -29,64 +15,42 @@
         <form class="form-inline">
             <div class="form-group">
                 <label class="roomLabel" for="rooms"></label>
-                <select class="form-control" id="rooms">
-                    <option value="room01">Team01</option>
-                    <option value="room02">Team02</option>
+                <select class="form-control" id="rooms" style="background-color:black; color:white;">
+                    <option value="room01">Room01</option>
+                    <option value="room02">Room02</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary" id="sendButton">Join</button>
             <br>
-            <div id="score4check"></div>
-            <br />
-            <br />
+            <br>
+            <!--
+            <p>
+                <input type="button" class="chk1" onclick="changecolor('#ff4646');" style="width: 150px; height: 50px; color: red;">
+                <input type="button" class="chk2" onclick="changecolor('#4459ff');" style="width: 150px; height: 50px; color: blue;">
+                <input type="button" class="chk3" onclick="changecolor('#30c74f');" style="width: 150px; height: 50px; color: green;">
+                <input type="button" class="chk4" onclick="changecolor('#000000');" style="width: 150px; height: 50px; color: black;">
+            </p>
+            -->
         </form>
 
         <!-- score control -->
         <div style="height: 1310px">
-            <input type="button" value="Reset" name="reset" onclick="reset();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="back" name="back" onclick="back()" style="width: 350px; height: 200px; font: 70pt Arial">
-            <br />
+            <div id="score_a4check"></div>
             <br>
-            <input type="button" value="+1" name="+1" onclick="plus1();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="-1" name="-1" onclick="minus1();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
+            <input type="button" value="A: +1" class="btn btn-primary" onclick="plus1_a();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="A: -1" class="btn btn-primary" onclick="minus1_a();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
             <br>
+            <input type="button" value="A: +5" class="btn btn-primary" onclick="plus5_a();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="A: -5" class="btn btn-primary" onclick="minus5_a();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
             <br>
-            <input type="button" value="+10" name="+10" onclick="plus10();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="-10" name="-10" onclick="minus10();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
+            <div id="score_b4check"></div>
             <br>
+            <input type="button" value="B: +1" class="btn btn-primary" onclick="plus1_b();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="B: -1" class="btn btn-primary" onclick="minus1_b();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
             <br>
-            <br>
-            <br>
-            <br>
-            <br>
+            <input type="button" value="B: +5" class="btn btn-primary" onclick="plus5_b();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="B: -5" class="btn btn-primary" onclick="minus5_b();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
             <br>
             <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
+            <input type="button" value="Reset" class="btn btn-primary" onclick="reset();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="back" class="btn btn-primary" onclick="back()" style="width: 350px; height: 200px; font: 70pt Arial">
+            <input type="button" value="Scoreboard" class="btn btn-primary" onclick="jump2board();" style="width: 700px; height: 200px; font: 70pt Arial">
         </div>
-        <div id="score1"></div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
     </div>
 
     <script type="text/javascript">
@@ -94,11 +58,10 @@
         var isEnter = false;
         var name = '';
 
-        socket.on("server_to_client", function (data) { write_score(data.value) });
-        function write_score(score) {
-            // $("#score1").append("<div><h1>" + score + "</h1></div>");
-            document.getElementById("score1").innerHTML = '<div><h1><p align="center"><span style="font-size: 700px;">' + score + '</h1></p></div>';
-            document.getElementById("score4check").innerHTML = '<div><h2>Current score: </h2><h1><p align="center"><span style="font-size: 65px;">' + score + '</h1></p></div>';
+        socket.on("score", function (data) { write_score(data) });
+        function write_score(data) {
+            document.getElementById("score_a4check").innerHTML = '<div><h1 style="display:inline">Score A:  </h1><h1 style="display:inline;"><p align="center" style="display:inline;"><span style="font-size: 65px;">' + data.score_a + '</h1></p></div>';
+            document.getElementById("score_b4check").innerHTML = '<div><h1 style="display:inline">Score B:  </h1><h1 style="display:inline;"><p align="center" style="display:inline;"><span style="font-size: 65px;">' + data.score_b + '</h1></p></div>';
         }
 
         $("form").submit(function (e) {
@@ -112,39 +75,62 @@
         });
 
         function changeLabel() {
-            $("#teams").prop("disabled", true);
+            $("#rooms").prop("disabled", true);
             $("button").text("Joined!");
             isEnter = true;
         }
 
-        function plus1() {
-            socket.emit("client_to_server", { value: 1 });
+        function plus1_a() {
+            socket.emit("team_a", { value: 1 });
         }
 
-        function plus10() {
-            socket.emit("client_to_server", { value: 10 });
+        function plus5_a() {
+            socket.emit("team_a", { value: 5 });
         }
 
-        function minus1() {
-            socket.emit("client_to_server", { value: -1 });
+        function minus1_a() {
+            socket.emit("team_a", { value: -1 });
         }
 
-        function minus10() {
-            socket.emit("client_to_server", { value: -10 });
+        function minus5_a() {
+            socket.emit("team_a", { value: -5 });
+        }
+
+        function plus1_b() {
+            socket.emit("team_b", { value: 1 });
+        }
+
+        function plus5_b() {
+            socket.emit("team_b", { value: 5 });
+        }
+
+        function minus1_b() {
+            socket.emit("team_b", { value: -1 });
+        }
+
+        function minus5_b() {
+            socket.emit("team_b", { value: -5 });
         }
 
         function reset() {
-            socket.emit("client_to_server", { value: "reset" });
+            if (window.confirm("Reset")) socket.emit("team_all", { value: "reset" });
         }
 
         function init() {
-            socket.emit("client_to_server", { value: "init" });
+            socket.emit("team_all", { value: "init" });
         }
 
         function back() {
-            socket.emit("client_to_server", { value: "back" });
+            if (window.confirm("Back")) socket.emit("team_all", { value: "back" });
         }
 
+        function jump2board() {
+            if (window.confirm("Jump")) location.href = "scoreboard.html";
+        }
+
+        function changecolor(newColor) {
+            document.body.style.backgroundColor = newColor;
+        }
     </script>
 </body>
 </html>
