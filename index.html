@@ -15,7 +15,7 @@
         <form class="form-inline">
             <div class="form-group">
                 <label class="roomLabel" for="rooms"></label>
-                <select class="form-control" id="rooms">
+                <select class="form-control" id="rooms" style="background-color:black; color:white;">
                     <option value="room01">Room01</option>
                     <option value="room02">Room02</option>
                 </select>
@@ -23,66 +23,34 @@
             <button type="submit" class="btn btn-primary" id="sendButton">Join</button>
             <br>
             <br>
+            <!--
             <p>
                 <input type="button" class="chk1" onclick="changecolor('#ff4646');" style="width: 150px; height: 50px; color: red;">
                 <input type="button" class="chk2" onclick="changecolor('#4459ff');" style="width: 150px; height: 50px; color: blue;">
                 <input type="button" class="chk3" onclick="changecolor('#30c74f');" style="width: 150px; height: 50px; color: green;">
                 <input type="button" class="chk4" onclick="changecolor('#000000');" style="width: 150px; height: 50px; color: black;">
             </p>
+            -->
         </form>
 
         <!-- score control -->
         <div style="height: 1310px">
             <div id="score_a4check"></div>
             <br>
-            <input type="button" value="A: +1" onclick="plus1_a();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="A: -1" onclick="minus1_a();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
+            <input type="button" value="A: +1" class="btn btn-primary" onclick="plus1_a();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="A: -1" class="btn btn-primary" onclick="minus1_a();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
             <br>
-            <input type="button" value="A: +5" onclick="plus5_a();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="A: -5" onclick="minus5_a();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
+            <input type="button" value="A: +5" class="btn btn-primary" onclick="plus5_a();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="A: -5" class="btn btn-primary" onclick="minus5_a();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
             <br>
             <div id="score_b4check"></div>
             <br>
-            <input type="button" value="B: +1" onclick="plus1_b();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="B: -1" onclick="minus1_b();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
+            <input type="button" value="B: +1" class="btn btn-primary" onclick="plus1_b();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="B: -1" class="btn btn-primary" onclick="minus1_b();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
             <br>
-            <input type="button" value="B: +5" onclick="plus5_b();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="B: -5" onclick="minus5_b();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
+            <input type="button" value="B: +5" class="btn btn-primary" onclick="plus5_b();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="B: -5" class="btn btn-primary" onclick="minus5_b();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
             <br>
             <br>
-            <input type="button" value="Reset" onclick="reset();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="back" onclick="back()" style="width: 350px; height: 200px; font: 70pt Arial">
-            <input type="button" value="Scoreboard" onclick="jump2board();" style="width: 700px; height: 200px; font: 70pt Arial">
+            <input type="button" value="Reset" class="btn btn-primary" onclick="reset();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="back" class="btn btn-primary" onclick="back()" style="width: 350px; height: 200px; font: 70pt Arial">
+            <input type="button" value="Scoreboard" class="btn btn-primary" onclick="jump2board();" style="width: 700px; height: 200px; font: 70pt Arial">
         </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <h1>Plasma Striker! @KoyoFes2018</h1>
-        <br>
-        <div>
-        <span id="score_a" style="position:absolute; left:100px;"></span>
-        <span id="score_b" style="position:absolute; right:100px;"></span>
-        </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
     </div>
 
     <script type="text/javascript">
@@ -92,9 +60,7 @@
 
         socket.on("score", function (data) { write_score(data) });
         function write_score(data) {
-            document.getElementById("score_a").innerHTML = '<h1 style="display:inline;"><span style="font-size: 470px;">' + data.score_a + '</span></h1>';
             document.getElementById("score_a4check").innerHTML = '<div><h1 style="display:inline">Score A:  </h1><h1 style="display:inline;"><p align="center" style="display:inline;"><span style="font-size: 65px;">' + data.score_a + '</h1></p></div>';
-            document.getElementById("score_b").innerHTML = '<h1 style="display:inline;"><span style="font-size: 470px;">' + data.score_b + '</span></h1>';
             document.getElementById("score_b4check").innerHTML = '<div><h1 style="display:inline">Score B:  </h1><h1 style="display:inline;"><p align="center" style="display:inline;"><span style="font-size: 65px;">' + data.score_b + '</h1></p></div>';
         }
 
