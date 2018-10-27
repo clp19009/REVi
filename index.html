@@ -9,9 +9,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <style type="text/css">
-        body {background-color: black;}
-        h1 {font-size: 70px; color: white;}
-        h2 {color: white;}
+        body {
+            background-color: black;
+        }
+
+        h1 {
+            font-size: 70px;
+            color: white;
+        }
+
+        h2 {
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -34,7 +43,8 @@
 
         <!-- score control -->
         <div style="height: 1310px">
-            <input type="button" value="Reset" name="reset" onclick="reset();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="back" name="back" onclick="back()" style="width: 350px; height: 200px; font: 70pt Arial"> <br />
+            <input type="button" value="Reset" name="reset" onclick="reset();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="back" name="back" onclick="back()" style="width: 350px; height: 200px; font: 70pt Arial">
+            <br />
             <br>
             <input type="button" value="+1" name="+1" onclick="plus1();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="-1" name="-1" onclick="minus1();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
             <br>
