@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/YuseiNaito/koyoscore#readme",
   "dependencies": {
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
     "socket.io": "^2.1.1"
   }
 }
