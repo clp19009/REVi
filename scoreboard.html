@@ -10,20 +10,23 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 </head>
 <body>
+    <p class="resizeimage">
+        <img src="image/logo2_edit.png" alt="logo">
+    </p>
     <div class="container">
-        <h1>koyoscore</h1>
+        <br>
         <form class="form-inline" id="form">
             <div class="form-group">
                 <label class="roomLabel" for="rooms"></label>
-                <input type="tel" class="form-control" id="rooms" style="background-color:black; color:white;" maxlength="5">
+                <input type="tel" class="form-control" id="rooms" style="background-color: black; color: white;" maxlength="5">
             </div>
             <button type="submit" class="btn btn-primary" id="sendButton">Join</button>
             <input type="button" value="Counter" class="btn btn-primary" onclick="location.href = 'index.html';">
         </form>
-        <br>
-        <br>
+        
         <h2>
             <span id="setting">
+                <br>
                 <input type="button" value="Complete setting!" class="btn btn-primary" onclick="document.getElementById('setting').style.display = `none`; document.getElementById('on_game').style.display = `inline-block`;">
                 <br>
                 <br>
@@ -39,11 +42,9 @@
                 <input type="button" class="chk3" onclick="changecolor('team_b', '#30c74f');" style="width: 100px; height: 25px; color: green;">
                 <input type="button" class="chk4" onclick="changecolor('team_b', '#000000');" style="width: 100px; height: 25px; color: black;">
             </span>
-            <input type="button" id="on_game" value="ON GAME!" class="btn btn-primary" style="display: none;" onclick="document.getElementById('on_game').style.display = `none`; document.getElementById('setting').style.display = `inline-block`;">
+            <input type="button" id="on_game" value="ON GAME!" class="btn btn-primary" style="display: none; background-color:black; position: absolute; left: 50%; transform: translate(-50%);" onclick="document.getElementById('on_game').style.display = `none`; document.getElementById('setting').style.display = `inline-block`;">
         </h2>
 
-        <h1>Plasma Striker! @KoyoFes2018</h1>
-        <br>
         <div>
             <h1 style="display: inline;"><span id="team_a" style="position: absolute; left: 25%; transform: translate(-50%); font-size: 20vw;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></h1>
             <span id="score_a" style="position: absolute; left: 25%; transform: translate(-50%);"></span>
