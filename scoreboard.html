@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>koyoscore</title>
+    <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>koyoscore</h1>
+        <form class="form-inline">
+            <div class="form-group">
+                <label class="roomLabel" for="rooms"></label>
+                <select class="form-control" id="rooms">
+                    <option value="room01">Room01</option>
+                    <option value="room02">Room02</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="sendButton">Join</button>
+            <br>
+            <br>
+            <span><input type="button" value="Team A" id="button_a_1" onclick="document.getElementById('button_a_1').style.display = `none`; document.getElementById('button_a_2').style.display = `inline-block`;"></span>
+            <span id="button_a_2" style="display:none;"><input type="button" style="display:inline" value="TeamA" onclick="document.getElementById('button_a_1').style.display = `inline-block`; document.getElementById('button_a_2').style.display = `none`;">
+                <input type="button" class="chk1" onclick="changecolor('team_a', '#ff4646');" style="width: 100px; height: 50px; color: red;">
+                <input type="button" class="chk2" onclick="changecolor('team_a', '#4459ff');" style="width: 100px; height: 50px; color: blue;">
+                <input type="button" class="chk3" onclick="changecolor('team_a', '#30c74f');" style="width: 100px; height: 50px; color: green;">
+                <input type="button" class="chk4" onclick="changecolor('team_a', '#000000');" style="width: 100px; height: 50px; color: black;">
+            </span>
+            <span><input type="button" value="Team B" id="button_b_1" onclick="document.getElementById('button_b_1').style.display = `none`; document.getElementById('button_b_2').style.display = `inline-block`;"></span>
+            <span id="button_b_2" style="display:none;"><input type="button" value="Team B" onclick="document.getElementById('button_b_1').style.display = `inline-block`; document.getElementById('button_b_2').style.display = `none`;">
+                <input type="button" class="chk1" onclick="changecolor('team_b', '#ff4646');" style="width: 100px; height: 50px; color: red;">
+                <input type="button" class="chk2" onclick="changecolor('team_b', '#4459ff');" style="width: 100px; height: 50px; color: blue;">
+                <input type="button" class="chk3" onclick="changecolor('team_b', '#30c74f');" style="width: 100px; height: 50px; color: green;">
+                <input type="button" class="chk4" onclick="changecolor('team_b', '#000000');" style="width: 100px; height: 50px; color: black;">
+            </span>
+        </form>
+
+        <h1>Plasma Striker! @KoyoFes2018</h1>
+        <br>
+        <div>
+            <h1 style="display:inline;"><span id="team_a" style="position: absolute; left: 25%; transform: translate(-50%); font-size:20vw;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></h1>
+            <span id="score_a" style="position: absolute; left: 25%; transform: translate(-50%);"></span>
+            <h1 style="display:inline;"><span id="team_b" style="position: absolute; left: 75%; transform: translate(-50%); font-size:20vw;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></h1>
+            <span id="score_b" style="position: absolute; left: 75%; transform: translate(-50%);"></span>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var socket = io.connect();
+        var isEnter = false;
+        var name = '';
+
+        socket.on("score", function (data) { write_score(data) });
+        function write_score(data) {
+            document.getElementById("score_a").innerHTML = '<h1 style="display:inline;"><span style="font-size:20vw;">' + data.score_a + '</span></h1>';
+            document.getElementById("score_b").innerHTML = '<h1 style="display:inline;"><span style="font-size:20vw;">' + data.score_b + '</span></h1>';
+        }
+
+        $("form").submit(function (e) {
+            var selectRoom = $("#rooms").val();
+            if (!isEnter) {
+                socket.emit("client_to_server_join", { value: selectRoom });
+                changeLabel();
+                init();
+            }
+            e.preventDefault();
+        });
+
+        function init() {
+            socket.emit("team_all", { value: "init" });
+        }
+
+        function changeLabel() {
+            $("#rooms").prop("disabled", true);
+            $("button").text("Joined!");
+            isEnter = true;
+        }
+
+        function changecolor(team, newColor) {
+            // document.body.style.backgroundColor = newColor;
+            switch (team) {
+                case 'team_a':
+                    document.getElementById("team_a").style.backgroundColor = newColor;
+                    break;
+                case 'team_b':
+                    document.getElementById("team_b").style.backgroundColor = newColor;
+                    break;
+                default: ;
+            }
+        }
+    </script>
+</body>
+</html>
