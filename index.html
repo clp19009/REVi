@@ -15,10 +15,7 @@
         <form class="form-inline">
             <div class="form-group">
                 <label class="roomLabel" for="rooms"></label>
-                <select class="form-control" id="rooms" style="background-color:black; color:white;">
-                    <option value="room01">Room01</option>
-                    <option value="room02">Room02</option>
-                </select>
+                <input type="tel" class="form-control" id="rooms" style="background-color:black; color:white;" maxlength="5">
             </div>
             <button type="submit" class="btn btn-primary" id="sendButton">Join</button>
             <br>
@@ -75,8 +72,9 @@
         });
 
         function changeLabel() {
-            $("#rooms").prop("disabled", true);
-            $("button").text("Joined!");
+            // $("#rooms").prop("disabled", true);
+            // $("button").text("Joined!");
+            document.getElementById("form").style.display = `none`;
             isEnter = true;
         }
 
