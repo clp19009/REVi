@@ -3,10 +3,10 @@ const socketio = require('socket.io');
 const fs = require('fs');
 const path = require('path');
 
-var score_a = 0;
-var score_b = 0;
-var scores_a = [0];
-var scores_b = [0];
+var score_a = new Map();
+var score_b = new Map();
+var scores_a = new Map();
+var scores_b = new Map();
 const scores_len_max = 100;
 
 const server = http.createServer(requestListener);
@@ -58,14 +58,12 @@ function readFileHandler(fileName, contentType, isBinary, response) {
                     response.setHeader('Content-Type', contentType);
                     if (!isBinary) {
                         response.end(data);
-                    }
-                    else {
+                    } else {
                         response.end(data, 'binary');
                     }
                 }
             });
-        }
-        else {
+        } else {
             response.statusCode = 400;
             response.end('400 Error');
         }
@@ -82,6 +80,12 @@ io.sockets.on('connection', function (socket) {
         console.log("new join @ " + data.value);
         room = data.value;
         socket.join(room);
+	if (!score_a.has(room)) {
+	  score_a.set(room, 0);
+	  score_b.set(room, 0);
+	  // scores_a.set(room, );
+	  // scores_b.set(room, );
+	}
     });
 
     socket.on('team_all', function (data) {
@@ -90,54 +94,54 @@ io.sockets.on('connection', function (socket) {
                 break;
             case "back":
                 if (scores_a.length > 3) {
-                    score_a = scores_a[scores_a.length - 2];
-                    scores_a.pop();
+                    score_a.set(room, scores_a[scores_a.length - 2]);
+                    // scores_a.pop();
                 }
                 if (scores_b.length > 3) {
-                    score_b = scores_b[scores_b.length - 2];
-                    scores_b.pop();
+                    score_b.set(room, scores_b[scores_b.length - 2]);
+                    // scores_b.pop();
                 }
                 break;
             case "reset":
-                score_a = 0;
-                scores_a.push(score_a);
-                score_b = 0;
-                scores_b.push(score_b);
+                score_a.set(room, 0);
+                score_b.set(room, 0);
+                // scores_a.push(score_a);
+                // scores_b.push(score_b);
                 break;
             default:
         }
-        if (scores_a.length > scores_len_max) scores_a.shift();
-        if (scores_b.length > scores_len_max) scores_b.shift();
+        // if (scores_a.length > scores_len_max) scores_a.shift();
+        // if (scores_b.length > scores_len_max) scores_b.shift();
 
-        io.to(room).emit('score', { score_a: score_a, score_b: score_b });
+        io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
         // debug
-        console.log("score A: " + score_a + " B: " + score_b + "  input: " + data.value);
+        console.log("score A: " + score_a.get(room) + " B: " + score_b.get(room) + "  input: " + data.value + " @" + room);
     });
 
     socket.on('team_a', function (data) {
-        score_a += data.value;
-        scores_a.push(score_a);
-        scores_b.push(score_b);
-        if (scores_a.length > scores_len_max) scores_a.shift();
-        if (scores_b.length > scores_len_max) scores_b.shift();
+	score_a.set(room, score_a.get(room) + data.value);
+        // scores_a.push(score_a);
+        // scores_b.push(score_b);
+        // if (scores_a.length > scores_len_max) scores_a.shift();
+        // if (scores_b.length > scores_len_max) scores_b.shift();
 
-        io.to(room).emit('score', { score_a: score_a, score_b: score_b });
+        io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
         // debug
-        console.log("score A: " + score_a + " B: " + score_b + "  input: " + data.value);
+        console.log("score A: " + score_a.get(room) + " B: " + score_b.get(room) + "  input: " + data.value + " @" + room);
     });
 
     socket.on('team_b', function (data) {
-        score_b += data.value;
-        scores_b.push(score_b);
-        scores_a.push(score_a);
-        if (scores_a.length > scores_len_max) scores_a.shift();
-        if (scores_b.length > scores_len_max) scores_b.shift();
+	score_b.set(room, score_b.get(room) + data.value);
+        // scores_b.push(score_b);
+        // scores_a.push(score_a);
+        // if (scores_a.length > scores_len_max) scores_a.shift();
+        // if (scores_b.length > scores_len_max) scores_b.shift();
 
-        io.to(room).emit('score', { score_a: score_a, score_b: score_b });
+        io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
         // debug
-        console.log("score A: " + score_a + " B: " + score_b + "  input: " + data.value);
+        console.log("score A: " + score_a.get(room) + " B: " + score_b.get(room) + "  input: " + data.value + " @" + room);
     });
 });

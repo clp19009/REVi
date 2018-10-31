@@ -52,8 +52,9 @@
 
     <script type="text/javascript">
         var socket = io.connect();
-        var isEnter = false;
+        var is_enter = false;
         var name = '';
+        var selectroom;
 
         socket.on("score", function (data) { write_score(data) });
         function write_score(data) {
@@ -62,9 +63,11 @@
         }
 
         $("form").submit(function (e) {
-            var selectRoom = $("#rooms").val();
-            if (!isEnter) {
-                socket.emit("client_to_server_join", { value: selectRoom });
+            selectRoom = $("#rooms").val();
+            var room = $("#rooms").val();
+            
+	    if (!is_enter) {
+                socket.emit("client_to_server_join", { value: room });
                 changeLabel();
                 init();
             }
@@ -75,39 +78,39 @@
             // $("#rooms").prop("disabled", true);
             // $("button").text("Joined!");
             document.getElementById("form").style.display = `none`;
-            isEnter = true;
+            is_enter = true;
         }
 
         function plus1_a() {
-            socket.emit("team_a", { value: 1 });
+	    if (is_enter) socket.emit("team_a", { value: 1 });
         }
 
         function plus5_a() {
-            socket.emit("team_a", { value: 5 });
+            if (is_enter) socket.emit("team_a", { value: 5 });
         }
 
         function minus1_a() {
-            socket.emit("team_a", { value: -1 });
+            if (is_enter) socket.emit("team_a", { value: -1 });
         }
 
         function minus5_a() {
-            socket.emit("team_a", { value: -5 });
+            if (is_enter) socket.emit("team_a", { value: -5 });
         }
 
         function plus1_b() {
-            socket.emit("team_b", { value: 1 });
+            if (is_enter) socket.emit("team_b", { value: 1 });
         }
 
         function plus5_b() {
-            socket.emit("team_b", { value: 5 });
+            if (is_enter) socket.emit("team_b", { value: 5 });
         }
 
         function minus1_b() {
-            socket.emit("team_b", { value: -1 });
+            if (is_enter) socket.emit("team_b", { value: -1 });
         }
 
         function minus5_b() {
-            socket.emit("team_b", { value: -5 });
+            if (is_enter) socket.emit("team_b", { value: -5 });
         }
 
         function reset() {
@@ -115,11 +118,11 @@
         }
 
         function init() {
-            socket.emit("team_all", { value: "init" });
+            if (is_enter) socket.emit("team_all", { value: "init" });
         }
 
         function back() {
-            if (window.confirm("Back")) socket.emit("team_all", { value: "back" });
+            if (is_enter && window.confirm("Back")) socket.emit("team_all", { value: "back" });
         }
 
         function jump2board() {
