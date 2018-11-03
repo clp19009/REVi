@@ -82,16 +82,16 @@ io.sockets.on('connection', function (socket) {
         console.log("new join @ " + data.value);
         room = data.value;
         socket.join(room);
-	if (!score_a.has(room)) {
+	if (!(score_a.room)) {
 	  score_a.set(room, 0);
 	  score_b.set(room, 0);
       scores_list.set(room, scores_index);
       scores_index++;
 	  scores_a[scores_list.get(room)] = new Array();
 	  scores_b[scores_list.get(room)] = new Array();
-	  (scores_a[scores_list.get(room)]).push(score_a.get(room));
-	  (scores_b[scores_list.get(room)]).push(score_b.get(room));
-	}
+            (scores_a[scores_list.get(room)]).push(score_a.get(room));
+	    (scores_b[scores_list.get(room)]).push(score_b.get(room));
+	 }
     });
 
     socket.on('team_all', function (data) {
@@ -111,13 +111,13 @@ io.sockets.on('connection', function (socket) {
             case "reset":
                 score_a.set(room, 0);
                 score_b.set(room, 0);
-                (scores_a[scores_list.get(room)]).push(score_a.get(room));
-                (scores_b[scores_list.get(room)]).push(score_b.get(room));
+                  (scores_a[scores_list.get(room)]).push(score_a.get(room));
+                  (scores_b[scores_list.get(room)]).push(score_b.get(room));
                 break;
             default:
         }
-        if ((scores_a[scores_list.get(room)]).length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
-        if ((scores_b[scores_list.get(room)]).length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
+        // if ((scores_a[scores_list.get(room)]).length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
+        // if ((scores_b[scores_list.get(room)]).length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
 
         io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
@@ -127,10 +127,10 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('team_a', function (data) {
 	score_a.set(room, score_a.get(room) + data.value);
-        (scores_a[scores_list.get(room)]).push(score_a.get(room));
-        (scores_b[scores_list.get(room)]).push(score_b.get(room));
-        if ((scores_a[scores_list.get(room)]).length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
-        if ((scores_b[scores_list.get(room)]).length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
+          (scores_a[scores_list.get(room)]).push(score_a.get(room));
+          (scores_b[scores_list.get(room)]).push(score_b.get(room));
+        // if ((scores_a[scores_list.get(room)]).length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
+        // if ((scores_b[scores_list.get(room)]).length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
 
         io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
@@ -140,10 +140,10 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('team_b', function (data) {
 	score_b.set(room, score_b.get(room) + data.value);
-        (scores_a[scores_list.get(room)]).push(score_a.get(room));
-        (scores_b[scores_list.get(room)]).push(score_b.get(room));
-        if ((scores_a[scores_list.get(room)]).length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
-        if ((scores_b[scores_list.get(room)]).length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
+          (scores_a[scores_list.get(room)]).push(score_a.get(room));
+          (scores_b[scores_list.get(room)]).push(score_b.get(room));
+	// if ((scores_a[scores_list.get(room)]).length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
+        // if ((scores_b[scores_list.get(room)]).length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
 
         io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
