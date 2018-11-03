@@ -85,12 +85,12 @@ io.sockets.on('connection', function (socket) {
 	if (!score_a.has(room)) {
 	  score_a.set(room, 0);
 	  score_b.set(room, 0);
-          scores_list.set(room, scores_index);
-          scores_index++;
+      scores_list.set(room, scores_index);
+      scores_index++;
 	  scores_a[scores_list.get(room)] = new Array();
 	  scores_b[scores_list.get(room)] = new Array();
-	  scores_a[scores_list.get(room)].push(score_a.get(room));
-	  scores_b[scores_list.get(room)].push(score_b.get(room));
+	  (scores_a[scores_list.get(room)]).push(score_a.get(room));
+	  (scores_b[scores_list.get(room)]).push(score_b.get(room));
 	}
     });
 
@@ -116,8 +116,8 @@ io.sockets.on('connection', function (socket) {
                 break;
             default:
         }
-        if (scores_a[scores_list.get(room)].length > scores_len_max) scores_a[scores_list.get(room)].shift();
-        if (scores_b[scores_list.get(room)].length > scores_len_max) scores_b[scores_list.get(room)].shift();
+        if ((scores_a[scores_list.get(room)]).length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
+        if ((scores_b[scores_list.get(room)]).length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
 
         io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
@@ -142,8 +142,8 @@ io.sockets.on('connection', function (socket) {
 	score_b.set(room, score_b.get(room) + data.value);
         (scores_a[scores_list.get(room)]).push(score_a.get(room));
         (scores_b[scores_list.get(room)]).push(score_b.get(room));
-        if (scores_a[scores_list.get(room)].length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
-        if (scores_b[scores_list.get(room)].length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
+        if ((scores_a[scores_list.get(room)]).length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
+        if ((scores_b[scores_list.get(room)]).length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
 
         io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
