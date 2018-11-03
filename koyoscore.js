@@ -12,6 +12,14 @@ var scores_index = 0;
 var scores_head = new Map();
 const scores_len_max = 10;
 
+var intervalID = new Map();
+var current_time = new Map();
+var start = new Map();
+var now = new Map();
+var before_now = new Map();
+var is_stopped = new Map();
+const time_max = 180000;
+
 const server = http.createServer(requestListener);
 server.listen((process.env.PORT || 3000), () => {
     console.log("Server opened @ port: " + (process.env.PORT || 3000));
@@ -91,8 +99,55 @@ io.sockets.on('connection', function (socket) {
 	  scores_head.set(room, 0);
 	  scores_a[scores_list.get(room)] = new Array(scores_len_max);
 	  scores_b[scores_list.get(room)] = new Array(scores_len_max);
+	   
+          var tmp_now = new Date();
+          now.set(room, tmp_now.getTime());
+          before_now.set(room, tmp_now.getTime());
+	  is_stopped.set(room, false);
 	}
     });
+
+    socket.on('game', function (data) {
+      var tmp_now = new Date(); 
+      now.set(room, tmp_now.getTime());
+      if (is_stopped.get(room)) {
+	console.log("pause");
+	start.set(room, start.get(room) + now.get(room) - before_now.get(room));
+      }
+      var ms = now.get(room) - now.get(room); 
+      if (!(typeof start.get(room) === "undefined")) {
+        ms = now.get(room) - start.get(room);
+      }
+      var s = Math.floor(ms / 1000);
+      /* 
+      var s = Math.floor(180 - ms / 1000) > 0 ? Math.floor(180 - ms / 1000) : 0;  
+      */
+      console.log(s);
+      before_now.set(room, now.get(room));
+      io.to(room).emit('game', { time: s });
+    });
+    
+    socket.on('game', function (data) {
+	switch (data.value) {
+	  case "start":
+	    var tmp_start = new Date();
+	    start.set(room, tmp_start.getTime()); 
+	    is_stopped.set(room, false);
+	    break;
+	  case "pause":
+	    is_stopped.set(room, !(is_stopped.get(room)));
+	    break;
+          case "reset":
+	    var tmp_now = new Date();
+	    start.set(room, tmp_now.getTime()); 
+            now.set(room, tmp_now.getTime());
+	    is_stopped.set(room, true);
+	    break;
+          default:
+	}
+    });
+    
+
 
     socket.on('team_all', function (data) {
         switch (data.value) {
@@ -116,7 +171,7 @@ io.sockets.on('connection', function (socket) {
     	emit_score(data);
 	debug(data);
     });
-
+    
     socket.on('team_a', function (data) {
 	score_a.set(room, score_a.get(room) + data.value);
 	push_score();
@@ -153,3 +208,4 @@ io.sockets.on('connection', function (socket) {
       console.log(score_a);
     }
 });
+

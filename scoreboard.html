@@ -14,7 +14,6 @@
         <img src="image/logo2_edit.png" alt="logo">
     </p>
     <div class="container">
-        <br>
         <form class="form-inline" id="form">
             <div class="form-group">
                 <label class="roomLabel" for="rooms"></label>
@@ -24,10 +23,11 @@
             <input type="button" value="Counter" class="btn btn-primary" onclick="location.href = 'index.html';">
         </form>
         
-        <h2>
+        
+	<h2>
             <span id="setting">
                 <br>
-                <input type="button" value="Complete setting!" class="btn btn-primary" onclick="document.getElementById('setting').style.display = `none`; document.getElementById('on_game').style.display = `inline-block`;">
+                <input type="button" value="Complete setting!" class="btn btn-primary" onclick="document.getElementById('setting').style.display = `none`; document.getElementById('prepared').style.display = `inline-block`; document.getElementById('start').style.display = `inline-block`;">
                 <br>
                 <br>
                 Team A
@@ -42,19 +42,29 @@
                 <input type="button" class="chk3" onclick="changecolor('team_b', '#30c74f');" style="width: 100px; height: 25px; color: green;">
                 <input type="button" class="chk4" onclick="changecolor('team_b', '#000000');" style="width: 100px; height: 25px; color: black;">
             </span>
-            <input type="button" id="on_game" value="ON GAME!" class="btn btn-primary" style="display: none; background-color:black; position: absolute; left: 50%; transform: translate(-50%);" onclick="document.getElementById('on_game').style.display = `none`; document.getElementById('setting').style.display = `inline-block`;">
-        </h2>
+	    <br>
+            <input type="button" id="prepared" value="PREPARED!" class="btn btn-primary" style="display: none; background-color:black; position: absolute; left: 50%; transform: translate(-50%);" onclick="document.getElementById('prepared').style.display = `none`; document.getElementById('setting').style.display = `inline-block`;">
+	    <br><br>
+            <input type="button" id="start" value="START" class="btn btn-primary" style="display: none; background-color:black; position: absolute; left: 50%; transform: translate(-50%);" onclick="game_start();">
+	    <br>
+            <input type="button" id="pause" value="PAUSE!" class="btn btn-primary" style="display: none; background-color:black; position: absolute; left: 50%; transform: translate(-50%);" onclick="game_pause();">
+	    <br>
+            <input type="button" id="reset" value="STOP" class="btn btn-primary" style="display: none; background-color:black; position: absolute; left: 50%; transform: translate(-50%);" onclick="game_reset();">
+	</h2>
 
         <div>
-            <h1 style="display: inline;"><span id="team_a" style="position: absolute; left: 25%; transform: translate(-50%); font-size: 20vw;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></h1>
-            <span id="score_a" style="position: absolute; left: 25%; transform: translate(-50%);"></span>
-            <h1 style="display: inline;"><span id="team_b" style="position: absolute; left: 75%; transform: translate(-50%); font-size: 20vw;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></h1>
-            <span id="score_b" style="position: absolute; left: 75%; transform: translate(-50%);"></span>
+            <h1 style="display: inline;"><span id="team_a" style="position: absolute; left: 20%; transform: translate(-50%); font-size: 20vw;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></h1>
+            <span id="score_a" style="position: absolute; left: 20%; transform: translate(-50%);"></span>
+            <h1 style="display: inline;"><span id="team_b" style="position: absolute; left: 80%; transform: translate(-50%); font-size: 20vw;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></h1>
+            <span id="score_b" style="position: absolute; left: 80%; transform: translate(-50%);"></span>
         </div>
         <br>
         <br>
+        <span id="time-title" style="position: absolute; left: 50%; transform: translate(-50%);"></span>
         <br>
         <br>
+	<br>
+        <span id="time" style="position: absolute; left: 50%; transform: translate(-50%);"></span>
         <br>
         <br>
         <br>
@@ -62,7 +72,7 @@
 
     <script type="text/javascript">
         var socket = io.connect();
-        var isEnter = false;
+        var is_enter = false;
         var name = '';
 
         socket.on("score", function (data) { write_score(data) });
@@ -71,9 +81,15 @@
             document.getElementById("score_b").innerHTML = '<h1 style="display:inline;"><span style="font-size:20vw;">' + data.score_b + '</span></h1>';
         }
 
+        socket.on("game", function (data) { write_time(data) });
+        function write_time(data) {
+		document.getElementById("time-title").innerHTML = '<h1 style="display:inline"><span style="font-size:3vw;">TIME[sec]</span></h1>';
+		document.getElementById("time").innerHTML = '<h1 style="display:inline"><span style="font-size:7vw;">' + data.time + '</span></h1>';
+        }
+
         $("form").submit(function (e) {
             var selectRoom = $("#rooms").val();
-            if (!isEnter) {
+            if (!is_enter) {
                 socket.emit("client_to_server_join", { value: selectRoom });
                 changeLabel();
                 init();
@@ -83,6 +99,22 @@
 
         function init() {
             socket.emit("team_all", { value: "init" });
+        }
+	
+        if (!is_enter) {
+	  setInterval('socket.emit("game", { value: "stop" })', 1000);
+	}
+
+        function game_start() {
+	    if (window.confirm("Game start!")) socket.emit("game", { value: "start" });
+        }
+        
+        function game_pause() {
+	    socket.emit("game", { value: "pause" });
+        }
+        
+        function game_reset() {
+	    if (window.confirm("time reset!")) socket.emit("game", { value: "reset" });
         }
 
         function changeLabel() {
