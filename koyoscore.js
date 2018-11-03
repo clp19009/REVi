@@ -127,10 +127,10 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('team_a', function (data) {
 	score_a.set(room, score_a.get(room) + data.value);
-        scores_a[scores_list.get(room)].push(score_a.get(room));
-        scores_b[scores_list.get(room)].push(score_b.get(room));
-        if (scores_a[scores_list.get(room)].length > scores_len_max) scores_a[scores_list.get(room)].shift();
-        if (scores_b[scores_list.get(room)].length > scores_len_max) scores_b[scores_list.get(room)].shift();
+        (scores_a[scores_list.get(room)]).push(score_a.get(room));
+        (scores_b[scores_list.get(room)]).push(score_b.get(room));
+        if ((scores_a[scores_list.get(room)]).length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
+        if ((scores_b[scores_list.get(room)]).length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
 
         io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
@@ -140,10 +140,10 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('team_b', function (data) {
 	score_b.set(room, score_b.get(room) + data.value);
-        scores_a[scores_list.get(room)].push(score_a.get(room));
-        scores_b[scores_list.get(room)].push(score_b.get(room));
-        if (scores_a[scores_list.get(room)].length > scores_len_max) scores_a[scores_list.get(room)].shift();
-        if (scores_b[scores_list.get(room)].length > scores_len_max) scores_b[scores_list.get(room)].shift();
+        (scores_a[scores_list.get(room)]).push(score_a.get(room));
+        (scores_b[scores_list.get(room)]).push(score_b.get(room));
+        if (scores_a[scores_list.get(room)].length > scores_len_max) (scores_a[scores_list.get(room)]).shift();
+        if (scores_b[scores_list.get(room)].length > scores_len_max) (scores_b[scores_list.get(room)]).shift();
 
         io.to(room).emit('score', { score_a: score_a.get(room), score_b: score_b.get(room) });
 
