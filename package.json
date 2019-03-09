@@ -1,25 +1,25 @@
 {
-  "name": "koyoscore",
+  "name": "revi",
   "version": "1.0.0",
   "description": "",
-  "main": "koyoscore.js",
+  "main": "revi.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node koyoscore.js"
+    "start": "node revi.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YuseiNaito/koyoscore.git"
+    "url": "git+https://github.com/YuseiNaito/REVi.git"
   },
   "author": "yuseinaito",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/YuseiNaito/koyoscore/issues"
-  },
-  "homepage": "https://github.com/YuseiNaito/koyoscore#readme",
   "dependencies": {
     "fs": "0.0.1-security",
+    "handlebars": "^4.0.5",
+    "jquery": "^2.1.4",
     "path": "^0.12.7",
-    "socket.io": "^2.1.1"
+    "peerjs": "^0.3.14",
+    "skyway-js": "^1.1.20",
+    "socket.io": "^2.2.0"
   }
 }

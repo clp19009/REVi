@@ -1,32 +1,34 @@
 ﻿body {
-    background-color: black;
+  background-color: #242424;
 }
 
 h1 {
-    font-size: 70px;
-    color: white;
+  font-size: 70px;
+  color: white;
 }
 
 h2 {
-    color: white;
+  color: white;
 }
 
-.chk1 {
-    background-color: #ff4646;
-}
-
-.chk2 {
-    background-color: #4459ff;
-}
-
-.chk3 {
-    background-color: #30c74f;
-}
-
-.chk4 {
-    background-color: #000000;
+input {
+  background-color: black;
+  color: white;
 }
 
 p.resizeimage img {
-    width: 100%;
+  width: 100%;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+}
+
+p.border {
+  border-bottom: 10px dashed white;
+}
+
+.video-container {
+  text-align: center;
 }

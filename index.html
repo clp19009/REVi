@@ -1,164 +1,268 @@
 ﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8">
-    <title>koyoscore</title>
-    <link rel="stylesheet"
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="shortcut icon" href="https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Ffavicon.ico?1552076618478">
+  <link rel="apple-touch-icon" href="https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2FREVi.png?1552077340411" />
+  <title>REVi</title>
+  <link rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>koyoscore</h1>
-        <form class="form-inline" id="form">
-            <div class="form-group">
-                <label class="roomLabel" for="rooms"></label>
-                <input type="tel" class="form-control" id="rooms" style="background-color:black; color:white;" maxlength="5">
-            </div>
-            <button type="submit" class="btn btn-primary" id="sendButton">Join</button>
-            <br>
-            <br>
-            <!--
-            <p>
-                <input type="button" class="chk1" onclick="changecolor('#ff4646');" style="width: 150px; height: 50px; color: red;">
-                <input type="button" class="chk2" onclick="changecolor('#4459ff');" style="width: 150px; height: 50px; color: blue;">
-                <input type="button" class="chk3" onclick="changecolor('#30c74f');" style="width: 150px; height: 50px; color: green;">
-                <input type="button" class="chk4" onclick="changecolor('#000000');" style="width: 150px; height: 50px; color: black;">
-            </p>
-            -->
-        </form>
-
-        <!-- score control -->
-        <div style="height: 1310px">
-            <div id="score_a4check"></div>
-            <br>
-            <input type="button" value="A: +1" class="btn btn-primary" onclick="plus1_a();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="A: -1" class="btn btn-primary" onclick="minus1_a();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
-            <br>
-            <input type="button" value="A: +5" class="btn btn-primary" onclick="plus5_a();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="A: -5" class="btn btn-primary" onclick="minus5_a();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
-            <br>
-            <div id="score_b4check"></div>
-            <br>
-            <input type="button" value="B: +1" class="btn btn-primary" onclick="plus1_b();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="B: -1" class="btn btn-primary" onclick="minus1_b();" style="width: 350px; height: 200px; font: 70pt Arial">&nbsp;
-            <br>
-            <input type="button" value="B: +5" class="btn btn-primary" onclick="plus5_b();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="B: -5" class="btn btn-primary" onclick="minus5_b();" style="width: 350px; height: 200px; font: 70pt Arial"><br>
-            <br>
-            <br>
-            <input type="button" value="Reset" class="btn btn-primary" onclick="reset();" style="width: 350px; height: 200px; font: 70pt Arial"><input type="button" value="back" class="btn btn-primary" onclick="back()" style="width: 350px; height: 200px; font: 70pt Arial">
-            <input type="button" value="Scoreboard" class="btn btn-primary" onclick="jump2board();" style="width: 700px; height: 200px; font: 70pt Arial">
-	    <br>
-            <div id="time"></div>
-	    <br>
-            <input type="button" value="Game start!" class="btn btn-primary" onclick="game_start();" style="width: 700px; height: 200px; font: 70pt Arial">
-	    <br>
-            <input type="button" value="Game pause!" class="btn btn-primary" onclick="game_pause();" style="width: 700px; height: 200px; font: 70pt Arial">
-	    <br>
-            <input type="button" value="Time reset" class="btn btn-primary" onclick="game_reset();" style="width: 700px; height: 200px; font: 70pt Arial">
-        </div>
+  <div class="container">
+    <h1>REVi</h1>
+    <form class="form-group" id="form" style="text-align: center;">
+      <div class="form-group">
+        <label class="roomLabel" for="rooms"></label>
+        <input type="tel" class="form-control" id="rooms" style="color: white; background-color: black; width: 100%" placeholder="Room ID" maxlength="5" autocomplete="off" required>
+      </div>
+      <button type="button" class="btn btn-primary" id="share" style="background-color: black; border-color: white; width: 32%;">Share</button>
+      <button type="button" class="btn btn-primary" id="watch" style="background-color: black; border-color: white; width: 32%;">Watch</button>
+      <button type="button" class="btn btn-primary" id="leave" style="background-color: black; border-color: white; width: 32%;">Leave</button>
+    </form>
+    <br>
+    <div class="video-container" id="video-container">
+      <p class="border"></p>
+      <h2>Your screen</h2>
+      <video id="local_video" autoplay muted>
+        <p>
+          にゃーん
+        </p>
+      </video>
+      <br>
+      <br>
+      <p class="border"></p>
+      <br>
+      <div id="remote_videos"></div>
     </div>
+  </div>
 
-    <script type="text/javascript">
-        var socket = io.connect();
-        var is_enter = false;
-        var name = '';
-        var selectroom;
+  <script src="//cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
+  <!-- script -->
+  <script type="text/javascript">
+    const Peer = window.Peer;
 
-        socket.on("score", function (data) { write_score(data) });
-        function write_score(data) {
-            document.getElementById("score_a4check").innerHTML = '<div><h1 style="display:inline">Score A:  </h1><h1 style="display:inline;"><p align="center" style="display:inline;"><span style="font-size: 65px;">' + data.score_a + '</h1></p></div>';
-            document.getElementById("score_b4check").innerHTML = '<div><h1 style="display:inline">Score B:  </h1><h1 style="display:inline;"><p align="center" style="display:inline;"><span style="font-size: 65px;">' + data.score_b + '</h1></p></div>';
+    (async function main() {
+      const localVideo = document.getElementById('local_video');
+      const remoteVideos = document.getElementById('remote_videos');
+      const shareTrigger = document.getElementById('share');
+      const watchTrigger = document.getElementById('watch');
+      const leaveTrigger = document.getElementById('leave');
+      var mode = new Map();
+      leaveTrigger.disabled = true;
+      var is_shared = false;
+
+      const peer = new Peer({
+        key: "b2002378-5532-44a8-a1b5-712c137db594",
+        debug: 2,
+        sdpSemantics: "unified-plan"
+      });
+
+      var localStream = null;
+      window.addEventListener("message", function (event) {
+        if (event.data.direction == "streamId") {
+          get_user_media(event.data.message, "local_video");
         }
+      });
 
-        socket.on("game", function (data) { write_time(data) });
-        function write_time(data) {
-            document.getElementById("time").innerHTML = '<div><h1 style="display:inline">TIME:  </h1><h1 style="display:inline;"><p align="center" style="display:inline;"><span style="font-size: 65px;">' + data.time + '</h1></p></div>';
-        }
+      set_event();
 
-        $("form").submit(function (e) {
-            selectRoom = $("#rooms").val();
-            var room = $("#rooms").val();
-            
-	    if (!is_enter) {
-                socket.emit("client_to_server_join", { value: room });
-                changeLabel();
-                init();
+      // listen event
+      function set_event() {
+        watchTrigger.addEventListener('click', watch, { once: true });
+        async function watch() {
+          await shareTrigger.removeEventListener('click', share);
+          console.log('watch');
+          is_shared = false;
+          const roomId = await $("#rooms").val();
+          if (!peer.open) {
+            return;
+          }
+          var room = await peer.joinRoom(roomId, {
+            mode: 'mesh'
+          });
+          prepare4share(room, "watch");
+        };
+
+        shareTrigger.addEventListener('click', share, { once: true });
+        async function share() {
+          await watchTrigger.removeEventListener('click', watch);
+          is_shared = true;
+          const roomId = await $("#rooms").val();
+          window.postMessage("share");
+          if (!peer.open) {
+            console.log('peer is not opened');
+            return;
+          }
+          var set_interval_id = setInterval(wait, 1000);
+          async function wait() {
+            console.log("wait");
+            if (localStream != null) {
+              console.log("break");
+              clearInterval(set_interval_id);
+              var room = await peer.joinRoom(roomId, {
+                mode: 'mesh',
+                stream: localStream
+              });
+              prepare4share(room, "share");
             }
-            e.preventDefault();
+          }
+        };
+      }
+
+      // capture
+      function get_user_media(streamId, videoId) {
+        navigator.mediaDevices.getUserMedia({
+          video: {
+            mandatory: {
+              chromeMediaSource: 'desktop',
+              chromeMediaSourceId: streamId
+            }
+          },
+          audio: {
+            mandatory: {
+              chromeMediaSource: 'desktop',
+              chromeMediaSourceId: streamId
+            }
+          }
+        }).then(stream => {
+          localStream = stream;
+          document.getElementById(videoId).srcObject = localStream;
+          let deviceId = stream.getVideoTracks()[0].getConstraints().deviceId;
+          if (typeof deviceId === 'object') {
+            deviceId = JSON.stringify(deviceId);
+          }
+          console.log(`stream.getConstraints().deviceId=${deviceId}`);
+        }).catch(err => {
+          console.error(err);
+        });
+      }
+
+      // share
+      async function prepare4share(room, join_mode) {
+        leaveTrigger.disabled = false;
+
+        room.on('peerJoin', peerId => {
+          mode[peerId] = join_mode;
         });
 
-	if (!is_enter) {
-	  setInterval('socket.emit("game", { value: "stop" })', 1000);
-	}
+        room.on('stream', async stream => {
+          console.log('stream');
+          if (stream == null)
+            console.log("null stream");
+          const newVideo = document.createElement('video');
+          newVideo.controls = true;
+          newVideo.srcObject = stream;
+          newVideo.setAttribute('id', stream.peerId);
+          remoteVideos.append(newVideo);
+          await newVideo.play().catch(console.error);
+        });
 
-        function changeLabel() {
-            document.getElementById("form").style.display = `none`;
-            is_enter = true;
-        }
+        room.on('peerLeave', peerId => {
+          /*
+          const remoteVideo = remoteVideos.querySelector(
+            `[data-peer-id=${peerId}]`
+          );
+          */
+          const remoteVideo = document.getElementById(peerId);
+          if (remoteVideo != null) {
+            remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+            remoteVideo.srcObject = null;
+            remoteVideo.remove();
+          }
+        });
 
-        function plus1_a() {
-	    if (is_enter) socket.emit("team_a", { value: 1 });
-        }
+        room.once('close', async () => {
+          await Array.from(remoteVideos.children).forEach(remoteVideo => {
+            remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+            remoteVideo.srcObject = null;
+            remoteVideo.remove();
+          });
+          if (localStream != null) {
+            await localStream.getTracks().forEach(function (track) {
+              track.stop();
+            });
+          }
+          await window.removeEventListener("message", send_request);
+          await shareTrigger.removeEventListener('click', change2share);
+          await watchTrigger.removeEventListener('click', change2watch);
+          leaveTrigger.disabled = true;
+          set_event();
+        });
 
-        function plus5_a() {
-            if (is_enter) socket.emit("team_a", { value: 5 });
-        }
+        room.on('data', async ({ data, src }) => {
+          if (mode[src] != null && mode[src] == "share") {
+            /*
+            const remoteVideo = remoteVideos.querySelector(
+              `[data-peer-id=${src}]`
+            );
+            */
+            const remoteVideo = document.getElementById(src);
+            if (remoteVideo != null) {
+              switch (data) {
+                case "watch":
+                  remoteVideo.setAttribute("display", "none");
+                  break;
+                case "share":
+                  remoteVideo.setAttribute("display", "block");
+                  break;
+              }
+            }
+          }
+          mode[src] = data;
+        });
 
-        function minus1_a() {
-            if (is_enter) socket.emit("team_a", { value: -1 });
-        }
+        window.addEventListener("message", send_request);
+        async function send_request(event) {
+          if (localStream != null) {
+            localStream.getTracks().forEach(function (track) {
+              track.stop();
+            });
+            localStream = null;
+            var set_interval_id = setInterval(wait, 1000);
+            function wait() {
+              if (localStream != null) {
+                clearInterval(set_interval_id);
+                room.replaceStream(localStream);
+                room.send('replace');
+                console.log("replace");
+              }
+            }
+          }
+        };
 
-        function minus5_a() {
-            if (is_enter) socket.emit("team_a", { value: -5 });
-        }
+        shareTrigger.addEventListener('click', change2share);
+        function change2share() {
+          window.postMessage("share");
+          is_shared = true;
+          // room.send("share");
+        };
 
-        function plus1_b() {
-            if (is_enter) socket.emit("team_b", { value: 1 });
-        }
+        watchTrigger.addEventListener('click', change2watch);
+        function change2watch() {
+          is_shared = false;
+          if (localStream != null) {
+            localStream.getTracks().forEach(function (track) {
+              track.stop();
+            });
+          }
+          // room.send("watch");
+        };
 
-        function plus5_b() {
-            if (is_enter) socket.emit("team_b", { value: 5 });
-        }
+        leaveTrigger.addEventListener('click', () => {
+          room.close();
+        }, { once: true });
+      }
 
-        function minus1_b() {
-            if (is_enter) socket.emit("team_b", { value: -1 });
-        }
-
-        function minus5_b() {
-            if (is_enter) socket.emit("team_b", { value: -5 });
-        }
-
-        function reset() {
-            if (window.confirm("Reset")) socket.emit("team_all", { value: "reset" });
-        }
-
-        function init() {
-            if (is_enter) socket.emit("team_all", { value: "init" });
-        }
-
-        function back() {
-            if (is_enter && window.confirm("Back")) socket.emit("team_all", { value: "back" });
-        }
-
-        function jump2board() {
-            if (window.confirm("Jump")) location.href = "scoreboard.html";
-        }
-        
-        function game_start() {
-	    if (window.confirm("Game start!")) socket.emit("game", { value: "start" });
-        }
-
-        function game_pause() {
-	    socket.emit("game", { value: "pause" });
-        }
-
-        function game_reset() {
-	    if (window.confirm("time reset")) socket.emit("game", { value: "reset" });
-        }
-
-        function changecolor(newColor) {
-            document.body.style.backgroundColor = newColor;
-        }
-    </script>
+      peer.on('error', console.error);
+    })();
+  </script>
 </body>
 </html>
