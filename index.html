@@ -74,11 +74,14 @@
       });
 
       var localStream = null;
-      window.addEventListener("message", function (event) {
+      window.addEventListener("message", first_listen);
+      function first_listen (event) {
+        console.log("receive");
         if (event.data.direction == "streamId") {
           get_user_media(event.data.message, "local_video");
+          window.removeEventListener("message", first_listen);
         }
-      });
+      };
 
       set_event();
 
@@ -221,11 +224,15 @@
 
         window.addEventListener("message", send_request);
         async function send_request(event) {
-          if (localStream != null) {
-            localStream.getTracks().forEach(function (track) {
-              track.stop();
-            });
-            localStream = null;
+          console.log("receive");
+          if (event.data.direction == "streamId") {
+            if (localStream != null) {
+              await localStream.getTracks().forEach(function (track) {
+                track.stop();
+              });
+              localStream = null;
+            }
+            await get_user_media(event.data.message, "local_video");
             var set_interval_id = setInterval(wait, 1000);
             function wait() {
               if (localStream != null) {
