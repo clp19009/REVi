@@ -29,6 +29,8 @@ function requestListener(request, response) {
       break;
     case '.gif':
       readFileHandler(requestURL, 'image/gif', true, response);
+    case '.json':
+      readFileHandler(requestURL, 'application/json', true, response);
       break;
     default:
       readFileHandler('/index.html', 'text/html', false, response);
