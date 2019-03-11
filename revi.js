@@ -67,7 +67,6 @@ function readFileHandler(fileName, contentType, isBinary, response) {
 
 const io = socketio.listen(server);
 
-var peerIds = {};
 
 io.sockets.on('connection', function (socket) {
   var room = '';
@@ -77,15 +76,5 @@ io.sockets.on('connection', function (socket) {
     console.log("new join @ " + data.value);
     room = data.value;
     socket.join(room);
-  });
-
-  socket.on('IDpair', function (data) {
-    console.log(data.pair + " @server");
-    if (typeof (peerIds[room]) === "undefined") {
-      peerIds[room] = {};
-    }
-    peerIds[room][data.pair[1]] = data.pair[0];
-    console.log(peerIds);
-    io.to(room).emit('screen', { pair: data.pair });
   });
 });
