@@ -104,7 +104,7 @@
           var room = await peer.joinRoom(roomId, {
             mode: 'mesh'
           });
-          prepare4share(room, "watch");
+          prepare4share(room);
         };
 
         shareTrigger.addEventListener('click', share, { once: true });
@@ -129,7 +129,7 @@
                 mode: 'mesh',
                 stream: localStream
               });
-              prepare4share(room, "share");
+              prepare4share(room);
             }
           }
         };
@@ -164,13 +164,9 @@
       }
 
       // share
-      async function prepare4share(room, join_mode) {
+      async function prepare4share(room) {
         roomId_form.disabled = true;
         leaveTrigger.disabled = false;
-
-        room.on('peerJoin', peerId => {
-          mode[peerId] = join_mode;
-        });
 
         room.on('stream', async stream => {
           console.log('stream');
