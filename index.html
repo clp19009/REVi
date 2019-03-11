@@ -69,11 +69,16 @@
       local_sign.hidden = true;
       leaveTrigger.disabled = true;
       var is_shared = false;
+      var socket = io.connect();
+      var peer;
 
-      const peer = new Peer({
-        key: "b2002378-5532-44a8-a1b5-712c137db594",
-        debug: 2,
-        sdpSemantics: "unified-plan"
+      socket.emit('message', 'key_request');
+      socket.on('api_key', function (data) {
+        peer = new Peer({
+          key: data.key,
+          debug: 2,
+          sdpSemantics: "unified-plan"
+        });
       });
 
       var localStream = null;
@@ -271,9 +276,9 @@
           local_sign.hidden = true;
           room.close();
         }, { once: true });
-      }
 
-      peer.on('error', console.error);
+        peer.on('error', console.error);
+      }
     })();
   </script>
 </body>
