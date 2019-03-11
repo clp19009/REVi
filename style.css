@@ -25,10 +25,22 @@ video {
   height: 100%;
 }
 
-p.border {
-  border-bottom: 10px dashed white;
-}
-
 .video-container {
   text-align: center;
 }
+
+.local {
+  position: relative;
+}
+
+  .local span {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    text-align: center;
+    color: #fff;
+    line-height: 250%;
+    background-color: black;
+    filter: alpha(opacity=80);
+    opacity: 0.8;
+  }

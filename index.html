@@ -36,17 +36,17 @@
       <button type="button" class="btn btn-primary" id="leave" style="background-color: black; border-color: white; width: 32%;">Leave</button>
     </form>
     <br>
+    <br>
     <div class="video-container" id="video-container">
-      <p class="border"></p>
-      <h2>Your screen</h2>
-      <video id="local_video" autoplay muted>
-        <p>
-          にゃーん
-        </p>
-      </video>
+      <div class="local">
+        <video id="local_video" autoplay muted>
+          <p>
+            にゃーん
+          </p>
+        </video>
+        <span id="local"> Your screen </span>
+      </div>
       <br>
-      <br>
-      <p class="border"></p>
       <br>
       <div id="remote_videos"></div>
     </div>
@@ -59,11 +59,14 @@
 
     (async function main() {
       const localVideo = document.getElementById('local_video');
+      const local_sign = document.getElementById('local');
       const remoteVideos = document.getElementById('remote_videos');
       const shareTrigger = document.getElementById('share');
       const watchTrigger = document.getElementById('watch');
       const leaveTrigger = document.getElementById('leave');
-      var mode = new Map();
+      const roomId_form = document.getElementById('rooms');
+      localVideo.hidden = true;
+      local_sign.hidden = true;
       leaveTrigger.disabled = true;
       var is_shared = false;
 
@@ -75,9 +78,9 @@
 
       var localStream = null;
       window.addEventListener("message", first_listen);
-      function first_listen (event) {
-        console.log("receive");
+      function first_listen(event) {
         if (event.data.direction == "streamId") {
+          console.log("receive");
           get_user_media(event.data.message, "local_video");
           window.removeEventListener("message", first_listen);
         }
@@ -89,10 +92,12 @@
       function set_event() {
         watchTrigger.addEventListener('click', watch, { once: true });
         async function watch() {
+          localVideo.hidden = true;
+          local_sign.hidden = true;
           await shareTrigger.removeEventListener('click', share);
           console.log('watch');
           is_shared = false;
-          const roomId = await $("#rooms").val();
+          const roomId = await $("#rooms").val() + 0;
           if (!peer.open) {
             return;
           }
@@ -104,9 +109,11 @@
 
         shareTrigger.addEventListener('click', share, { once: true });
         async function share() {
+          localVideo.hidden = false;
+          local_sign.hidden = false;
           await watchTrigger.removeEventListener('click', watch);
           is_shared = true;
-          const roomId = await $("#rooms").val();
+          const roomId = await $("#rooms").val() + 0;
           window.postMessage("share");
           if (!peer.open) {
             console.log('peer is not opened');
@@ -158,6 +165,7 @@
 
       // share
       async function prepare4share(room, join_mode) {
+        roomId_form.disabled = true;
         leaveTrigger.disabled = false;
 
         room.on('peerJoin', peerId => {
@@ -190,6 +198,7 @@
             remoteVideo.srcObject.getTracks().forEach(track => track.stop());
             remoteVideo.srcObject = null;
             remoteVideo.remove();
+            console.log("remove");
           });
           if (localStream != null) {
             await localStream.getTracks().forEach(function (track) {
@@ -199,27 +208,22 @@
           await window.removeEventListener("message", send_request);
           await shareTrigger.removeEventListener('click', change2share);
           await watchTrigger.removeEventListener('click', change2watch);
+          roomId_form.disabled = false;
           leaveTrigger.disabled = true;
           set_event();
         });
 
         room.on('data', async ({ data, src }) => {
-          if (mode[src] != null && mode[src] == "share") {
-            const remoteVideo = document.getElementById(src);
-            if (remoteVideo != null) {
-              switch (data) {
-                case "watch":
-                  remoteVideo.setAttribute("display", "none");
-                  localVideo.setAttribute("display", "none");
-                  break;
-                case "share":
-                  remoteVideo.setAttribute("display", "block");
-                  localVideo.setAttribute("display", "block");
-                  break;
-              }
-            }
+          console.log(data);
+          var remoteVideo = document.getElementById(src);
+          switch (data) {
+            case "watch":
+              remoteVideo.hidden = true;
+              break;
+            case "share":
+              remoteVideo.hidden = false;
+              break;
           }
-          mode[src] = data;
         });
 
         window.addEventListener("message", send_request);
@@ -227,7 +231,7 @@
           console.log("receive");
           if (event.data.direction == "streamId") {
             if (localStream != null) {
-              await localStream.getTracks().forEach(function (track) {
+              localStream.getTracks().forEach(function (track) {
                 track.stop();
               });
               localStream = null;
@@ -238,7 +242,7 @@
               if (localStream != null) {
                 clearInterval(set_interval_id);
                 room.replaceStream(localStream);
-                room.send('replace');
+                room.send('share');
                 console.log("replace");
               }
             }
@@ -247,16 +251,19 @@
 
         shareTrigger.addEventListener('click', change2share);
         function change2share() {
+          localVideo.hidden = false;
+          local_sign.hidden = false;
           window.postMessage("share");
           is_shared = true;
-          room.send("share");
         };
 
         watchTrigger.addEventListener('click', change2watch);
-        function change2watch() {
+        async function change2watch() {
+          localVideo.hidden = true;
+          local_sign.hidden = true;
           is_shared = false;
           if (localStream != null) {
-            localStream.getTracks().forEach(function (track) {
+            await localStream.getTracks().forEach(function (track) {
               track.stop();
             });
           }
