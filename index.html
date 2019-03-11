@@ -31,9 +31,10 @@
         <label class="roomLabel" for="rooms"></label>
         <input type="tel" class="form-control" id="rooms" style="color: white; background-color: black; width: 100%" placeholder="Room ID" maxlength="5" autocomplete="off" required>
       </div>
-      <button type="button" class="btn btn-primary" id="share" style="background-color: black; border-color: white; width: 32%;">Share</button>
-      <button type="button" class="btn btn-primary" id="watch" style="background-color: black; border-color: white; width: 32%;">Watch</button>
-      <button type="button" class="btn btn-primary" id="leave" style="background-color: black; border-color: white; width: 32%;">Leave</button>
+      <button type="button" class="btn btn-primary" id="screen" style="background-color: black; border-color: white; width: 24%;">Screen</button>
+      <button type="button" class="btn btn-primary" id="camera" style="background-color: black; border-color: white; width: 24%;">Camera</button>
+      <button type="button" class="btn btn-primary" id="watch" style="background-color: black; border-color: white; width: 24%;">Watch</button>
+      <button type="button" class="btn btn-primary" id="leave" style="background-color: black; border-color: white; width: 24%;">Leave</button>
     </form>
     <br>
     <br>
@@ -61,7 +62,8 @@
       const localVideo = document.getElementById('local_video');
       const local_sign = document.getElementById('local');
       const remoteVideos = document.getElementById('remote_videos');
-      const shareTrigger = document.getElementById('share');
+      const screenTrigger = document.getElementById('screen');
+      const cameraTrigger = document.getElementById('camera');
       const watchTrigger = document.getElementById('watch');
       const leaveTrigger = document.getElementById('leave');
       const roomId_form = document.getElementById('rooms');
@@ -71,6 +73,24 @@
       var is_shared = false;
       var socket = io.connect();
       var peer;
+
+      function get_browser_info(userAgent) {
+        if (userAgent.indexOf('opera') != -1) {
+          return 'opera';
+        } else if (userAgent.indexOf('msie') != -1) {
+          return 'ie';
+        } else if (userAgent.indexOf('chrome') != -1) {
+          return 'chrome';
+        } else if (userAgent.indexOf('safari') != -1) {
+          return 'safari';
+        } else if (userAgent.indexOf('gecko') != -1) {
+          return 'gecko';
+        } else {
+          return false;
+        }
+      }
+      const browser = await get_browser_info(window.navigator.userAgent.toLowerCase());
+      console.log(browser);
 
       socket.emit('message', 'key_request');
       socket.on('api_key', function (data) {
@@ -99,7 +119,8 @@
         async function watch() {
           localVideo.hidden = true;
           local_sign.hidden = true;
-          await shareTrigger.removeEventListener('click', share);
+          await screenTrigger.removeEventListener('click', screen);
+          await cameraTrigger.removeEventListener('click', camera);
           console.log('watch');
           is_shared = false;
           const roomId = await $("#rooms").val() + 0;
@@ -112,14 +133,49 @@
           prepare4share(room);
         };
 
-        shareTrigger.addEventListener('click', share, { once: true });
-        async function share() {
+        screenTrigger.addEventListener('click', screen, { once: true });
+        async function screen() {
           localVideo.hidden = false;
           local_sign.hidden = false;
+          await cameraTrigger.removeEventListener('click', camera);
           await watchTrigger.removeEventListener('click', watch);
           is_shared = true;
           const roomId = await $("#rooms").val() + 0;
-          window.postMessage("share");
+          switch (browser) {
+            case 'chrome':
+              window.postMessage("share");
+              break;
+            default:
+              get_user_media("", "local_video", "screen");
+          }
+          if (!peer.open) {
+            console.log('peer is not opened');
+            return;
+          }
+          var set_interval_id = setInterval(wait, 1000);
+          async function wait() {
+            console.log("wait");
+            if (localStream != null) {
+              console.log("break");
+              clearInterval(set_interval_id);
+              var room = await peer.joinRoom(roomId, {
+                mode: 'mesh',
+                stream: localStream
+              });
+              prepare4share(room);
+            }
+          }
+        };
+
+        cameraTrigger.addEventListener('click', camera, { once: true });
+        async function camera() {
+          localVideo.hidden = false;
+          local_sign.hidden = false;
+          await screenTrigger.removeEventListener('click', screen);
+          await watchTrigger.removeEventListener('click', watch);
+          is_shared = true;
+          const roomId = await $("#rooms").val() + 0;
+          get_user_media("", "local_video", "camera");
           if (!peer.open) {
             console.log('peer is not opened');
             return;
@@ -141,31 +197,71 @@
       }
 
       // capture
-      function get_user_media(streamId, videoId) {
-        navigator.mediaDevices.getUserMedia({
-          video: {
-            mandatory: {
-              chromeMediaSource: 'desktop',
-              chromeMediaSourceId: streamId
+      function get_user_media(streamId, videoId, mode) {
+        switch (mode) {
+          case 'screen':
+            switch (browser) {
+              case 'chrome':
+                navigator.mediaDevices.getUserMedia({
+                  video: {
+                    mandatory: {
+                      chromeMediaSource: 'desktop',
+                      chromeMediaSourceId: streamId
+                    }
+                  },
+                  audio: {
+                    mandatory: {
+                      chromeMediaSource: 'desktop',
+                      chromeMediaSourceId: streamId
+                    }
+                  }
+                }).then(stream => {
+                  localStream = stream;
+                  document.getElementById(videoId).srcObject = localStream;
+                  let deviceId = stream.getVideoTracks()[0].getConstraints().deviceId;
+                  if (typeof deviceId === 'object') {
+                    deviceId = JSON.stringify(deviceId);
+                  }
+                  console.log(`stream.getConstraints().deviceId=${deviceId}`);
+                }).catch(err => {
+                  console.error(err);
+                });
+                break;
+              default:
+                const is_screen = window.confirm('あなたが共有したいのはスクリーン全体ですか?');
+                navigator.mediaDevices.getUserMedia({
+                  video: { mediaSource: is_screen ? 'screen' : 'window' },
+                  audio: true
+                }).then(stream => {
+                  localStream = stream;
+                  document.getElementById(videoId).srcObject = localStream;
+                  let deviceId = stream.getVideoTracks()[0].getConstraints().deviceId;
+                  if (typeof deviceId === 'object') {
+                    deviceId = JSON.stringify(deviceId);
+                  }
+                  console.log(`stream.getConstraints().deviceId=${deviceId}`);
+                }).catch(err => {
+                  console.error(err);
+                });;
             }
-          },
-          audio: {
-            mandatory: {
-              chromeMediaSource: 'desktop',
-              chromeMediaSourceId: streamId
-            }
-          }
-        }).then(stream => {
-          localStream = stream;
-          document.getElementById(videoId).srcObject = localStream;
-          let deviceId = stream.getVideoTracks()[0].getConstraints().deviceId;
-          if (typeof deviceId === 'object') {
-            deviceId = JSON.stringify(deviceId);
-          }
-          console.log(`stream.getConstraints().deviceId=${deviceId}`);
-        }).catch(err => {
-          console.error(err);
-        });
+            break;
+          case 'camera':
+            navigator.mediaDevices.getUserMedia({
+              video: true,
+              audio: true
+            }).then(stream => {
+              localStream = stream;
+              document.getElementById(videoId).srcObject = localStream;
+              let deviceId = stream.getVideoTracks()[0].getConstraints().deviceId;
+              if (typeof deviceId === 'object') {
+                deviceId = JSON.stringify(deviceId);
+              }
+              console.log(`stream.getConstraints().deviceId=${deviceId}`);
+            }).catch(err => {
+              console.error(err);
+            });;
+            break;
+        }
       }
 
       // share
@@ -207,7 +303,8 @@
             });
           }
           await window.removeEventListener("message", send_request);
-          await shareTrigger.removeEventListener('click', change2share);
+          await screenTrigger.removeEventListener('click', change2screen);
+          await cameraTrigger.removeEventListener('click', change2camera);
           await watchTrigger.removeEventListener('click', change2watch);
           roomId_form.disabled = false;
           leaveTrigger.disabled = true;
@@ -237,7 +334,7 @@
               });
               localStream = null;
             }
-            await get_user_media(event.data.message, "local_video");
+            await get_user_media(event.data.message, "local_video", "screen");
             var set_interval_id = setInterval(wait, 1000);
             function wait() {
               if (localStream != null) {
@@ -250,11 +347,25 @@
           }
         };
 
-        shareTrigger.addEventListener('click', change2share);
-        function change2share() {
+        screenTrigger.addEventListener('click', change2screen);
+        function change2screen() {
           localVideo.hidden = false;
           local_sign.hidden = false;
-          window.postMessage("share");
+          switch (browser) {
+            case 'chrome':
+              window.postMessage("share");
+              break;
+            default:
+              get_user_media("", "local_video", 'screen');
+          }
+          is_shared = true;
+        };
+
+        cameraTrigger.addEventListener('click', change2camera);
+        function change2camera() {
+          localVideo.hidden = false;
+          local_sign.hidden = false;
+          get_user_media("", "local_video", 'camera');
           is_shared = true;
         };
 
