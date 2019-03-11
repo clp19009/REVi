@@ -44,7 +44,7 @@
             にゃーん
           </p>
         </video>
-        <span id="local"> Your screen </span>
+        <span id="local">Your screen </span>
       </div>
       <br>
       <br>
@@ -267,6 +267,8 @@
         };
 
         leaveTrigger.addEventListener('click', () => {
+          localVideo.hidden = true;
+          local_sign.hidden = true;
           room.close();
         }, { once: true });
       }
