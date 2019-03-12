@@ -20,21 +20,22 @@
   <link rel="stylesheet"
     href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
   <div style="width: 100%; height: 10%; min-height: 85px; position: fixed; z-index: 999; background-color: rgba(14, 14, 14, 0.90);">
-    <img src="https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Frevi.png?1552328090802" style="display: inline; height: 100%; object-fit: contain; position: absolute; left: 10px;">
+    <img src="https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Frevi.png?1552328090802" style="text-align: center; display: inline; height: 100%; object-fit: contain; position: absolute; left: 2%;">
     <input type="tel" class="form-control" id="rooms" style="display: inline; background-color: black; position: absolute; top: 5px; left: 27%; width: 35.5%;" placeholder="Room ID" required>
     <input type="text" class="form-control" id="name" style="display: inline; background-color: black; position: absolute; top: 5px; left: 63%; width: 35.5%;" placeholder="Name" required>
-    <button type="button" class="btn btn-primary" id="screen" style="background-color: black; border-color: lightgreen; position: absolute; bottom: 5px; left: 27%; width: 18.5%;">screen</button>
-    <button type="button" class="btn btn-primary" id="camera" style="background-color: black; border-color: lightblue; position: absolute; bottom: 5px; left: 46%; width: 18.5%;">camera</button>
-    <button type="button" class="btn btn-primary" id="watch" style="background-color: black; border-color: white; position: absolute; bottom: 5px; left: 65%; width: 18.5%;">watch</button>
-    <button type="button" class="btn btn-primary" id="leave" style="background-color: black; border-color: red; position: absolute; bottom: 5px; left: 84%; width: 15%;">→</button>
+    <button type="button" class="btn btn-primary fa fa-tv" id="screen" style="border-color: white; background-color: black; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 27%; width: 17.5%;"></button>
+    <button type="button" class="btn btn-primary fa fa-video" id="camera" style="border-color: white; background-color: black; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 45%; width: 17.5%; object-fit: contain;"></button>
+    <button type="button" class="btn btn-primary fa fa-sign-in-alt" id="watch" style="border-color: white; background-color: black; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 63%; width: 17.5%;"></button>
+    <button type="button" class="btn btn-primary fa fa-sign-out-alt" id="leave" style="border-color: white; background-color: black; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 81%; width: 17.5%;"></button>
   </div>
-  <div class="container" style="padding-top: 210px;">
+  <div class="container" style="padding-top: 14%;">
     <div class="video-container" id="video-container">
       <div class="local">
         <video id="local_video" autoplay muted>
@@ -108,7 +109,13 @@
         }
       };
 
-      set_event();
+      var set_interval_id4peer = setInterval(wait_peer, 500);
+      async function wait_peer() {
+        if (peer != null) {
+          set_event();
+          clearInterval(set_interval_id4peer);
+        }
+      }
 
       // listen event
       function set_event() {
@@ -311,13 +318,15 @@
         room.on('data', async ({ data, src }) => {
           console.log(data);
           var remoteVideo = document.getElementById(src);
-          switch (data) {
-            case "watch":
-              remoteVideo.hidden = true;
-              break;
-            case "share":
-              remoteVideo.hidden = false;
-              break;
+          if (remoteVideo != null) {
+            switch (data) {
+              case "watch":
+                remoteVideo.hidden = true;
+                break;
+              case "share":
+                remoteVideo.hidden = false;
+                break;
+            }
           }
         });
 

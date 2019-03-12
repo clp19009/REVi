@@ -66,7 +66,7 @@ function readFileHandler(fileName, contentType, isBinary, response) {
 }
 
 const io = socketio.listen(server);
-const api_key = "b2002378-5532-44a8-a1b5-712c137db594";
+const api_key = "55578595-05e9-4b88-bf24-5e93617f3ff0";
 
 io.sockets.on('connection', function (socket) {
   var room = '';
