@@ -72,22 +72,7 @@
       var socket = io.connect();
       var peer;
 
-      function get_browser_info(userAgent) {
-        if (userAgent.indexOf('opera') != -1) {
-          return 'opera';
-        } else if (userAgent.indexOf('msie') != -1) {
-          return 'ie';
-        } else if (userAgent.indexOf('chrome') != -1) {
-          return 'chrome';
-        } else if (userAgent.indexOf('safari') != -1) {
-          return 'safari';
-        } else if (userAgent.indexOf('gecko') != -1) {
-          return 'gecko';
-        } else {
-          return false;
-        }
-      }
-      const browser = await get_browser_info(window.navigator.userAgent.toLowerCase());
+      const browser = await get_browser(window.navigator.userAgent.toLowerCase());
       console.log(browser);
 
       socket.emit('message', 'key_request');
@@ -114,6 +99,25 @@
         if (peer != null) {
           set_event();
           clearInterval(set_interval_id4peer);
+        }
+      }
+
+      // functions ///////////////////////////////////////////////////
+
+      // get browser information
+      function get_browser(userAgent) {
+        if (userAgent.indexOf('opera') != -1) {
+          return 'opera';
+        } else if (userAgent.indexOf('msie') != -1) {
+          return 'ie';
+        } else if (userAgent.indexOf('chrome') != -1) {
+          return 'chrome';
+        } else if (userAgent.indexOf('safari') != -1) {
+          return 'safari';
+        } else if (userAgent.indexOf('gecko') != -1) {
+          return 'gecko';
+        } else {
+          return false;
         }
       }
 
@@ -227,6 +231,14 @@
                     deviceId = JSON.stringify(deviceId);
                   }
                   console.log(`stream.getConstraints().deviceId=${deviceId}`);
+
+                  // catch 'ended'
+                  stream.getVideoTracks().forEach(track => {
+                    track.addEventListener('ended', function () {
+                      console.log("ended");
+                      window.postMessage({ direction: "stream_event", message: "ended" }, "*");
+                    }, { once: true });
+                  });
                 }).catch(err => {
                   console.error(err);
                 });
@@ -244,6 +256,14 @@
                     deviceId = JSON.stringify(deviceId);
                   }
                   console.log(`stream.getConstraints().deviceId=${deviceId}`);
+
+                  // catch 'ended'
+                  stream.getVideoTracks().forEach(track => {
+                    track.addEventListener('ended', function () {
+                      console.log("ended");
+                      window.postMessage({ direction: "stream_event", message: "ended" }, "*");
+                    }, { once: true });
+                  });
                 }).catch(err => {
                   console.error(err);
                 });;
@@ -261,6 +281,14 @@
                 deviceId = JSON.stringify(deviceId);
               }
               console.log(`stream.getConstraints().deviceId=${deviceId}`);
+
+              // catch 'ended'
+              stream.getVideoTracks().forEach(track => {
+                track.addEventListener('ended', function () {
+                  console.log("ended");
+                  window.postMessage({ direction: "stream_event", message: "ended" }, "*");
+                }, { once: true });
+              });
             }).catch(err => {
               console.error(err);
             });;
@@ -306,7 +334,7 @@
               track.stop();
             });
           }
-          await window.removeEventListener("message", send_request);
+          await window.removeEventListener("message", listen_message);
           await screenTrigger.removeEventListener('click', change2screen);
           await cameraTrigger.removeEventListener('click', change2camera);
           await watchTrigger.removeEventListener('click', change2watch);
@@ -330,26 +358,34 @@
           }
         });
 
-        window.addEventListener("message", send_request);
-        async function send_request(event) {
-          console.log("receive");
-          if (event.data.direction == "streamId") {
-            if (localStream != null) {
-              localStream.getTracks().forEach(function (track) {
-                track.stop();
-              });
-              localStream = null;
-            }
-            await get_user_media(event.data.message, "local_video", "screen");
-            var set_interval_id = setInterval(wait, 1000);
-            function wait() {
+        window.addEventListener("message", listen_message);
+        async function listen_message(event) {
+          switch (event.data.direction) {
+            case 'streamId':
               if (localStream != null) {
-                clearInterval(set_interval_id);
-                room.replaceStream(localStream);
-                room.send('share');
-                console.log("replace");
+                localStream.getTracks().forEach(function (track) {
+                  track.stop();
+                });
+                localStream = null;
               }
-            }
+              await get_user_media(event.data.message, "local_video", "screen");
+              var set_interval_id = setInterval(wait, 1000);
+              function wait() {
+                if (localStream != null) {
+                  clearInterval(set_interval_id);
+                  room.replaceStream(localStream);
+                  room.send('share');
+                  console.log("replace");
+                }
+              }
+              break;
+            case 'stream_event':
+              switch (event.data.message) {
+                case 'ended':
+                  change2watch();
+                  break;
+              }
+              break;
           }
         };
 
