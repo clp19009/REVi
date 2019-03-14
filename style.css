@@ -1,5 +1,5 @@
 ﻿body {
-  background-color: #242424;
+  background-color: #141414;
 }
 
 h1 {
@@ -42,7 +42,7 @@ video {
     top: 10px;
     left: 10px;
     text-align: center;
-    color: #fff;
+    color: #141414;
     line-height: 250%;
     background-color: black;
     filter: alpha(opacity=80);
