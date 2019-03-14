@@ -20,7 +20,7 @@
   <link rel="stylesheet"
     href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="style.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 </head>
@@ -31,7 +31,7 @@
     <input type="tel" class="form-control" id="rooms" style="display: inline; background-color: black; position: absolute; top: 5px; left: 27%; width: 35.5%;" placeholder="Room ID" required>
     <input type="text" class="form-control" id="name" style="display: inline; background-color: black; position: absolute; top: 5px; left: 63%; width: 35.5%;" placeholder="Name" required>
     <button type="button" class="btn btn-primary fa fa-tv" id="screen" style="border-color: white; background-color: black; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 27%; width: 17.5%;"></button>
-    <button type="button" class="btn btn-primary fa fa-video" id="camera" style="border-color: white; background-color: black; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 45%; width: 17.5%; object-fit: contain;"></button>
+    <button type="button" class="btn btn-primary fa fa-video" id="camera" style="border-color: white; background-color: black; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 45%; width: 17.5%;"></button>
     <button type="button" class="btn btn-primary fa fa-sign-in-alt" id="watch" style="border-color: white; background-color: black; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 63%; width: 17.5%;"></button>
     <button type="button" class="btn btn-primary fa fa-sign-out-alt" id="leave" style="border-color: white; background-color: black; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 81%; width: 17.5%;"></button>
   </div>
@@ -51,6 +51,23 @@
     </div>
   </div>
 
+  <!-- modal for select camera -->
+  <div class="modal" id="camera_selector">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          Please select camera.
+        </div>
+        <div class="modal-body">
+          <select id="cameras"></select>
+          <select id="mics"></select>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="//cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
   <!-- script -->
   <script type="text/javascript">
@@ -65,6 +82,8 @@
       const watchTrigger = document.getElementById('watch');
       const leaveTrigger = document.getElementById('leave');
       const roomId_form = document.getElementById('rooms');
+      const camera_selector = document.getElementById('camera_selector');
+      camera_selector.style.display = 'none';
       localVideo.hidden = true;
       local_sign.hidden = true;
       leaveTrigger.disabled = true;
@@ -129,6 +148,7 @@
           local_sign.hidden = true;
           await screenTrigger.removeEventListener('click', screen);
           await cameraTrigger.removeEventListener('click', camera);
+          await watchTrigger.removeEventListener('click', watch);
           console.log('watch');
           is_shared = false;
           const roomId = await $("#rooms").val() + 0;
@@ -136,7 +156,8 @@
             return;
           }
           var room = await peer.joinRoom(roomId, {
-            mode: 'mesh'
+            mode: 'mesh',
+            stream: null
           });
           prepare4share(room);
         };
@@ -145,6 +166,7 @@
         async function screen() {
           localVideo.hidden = false;
           local_sign.hidden = false;
+          await screenTrigger.removeEventListener('click', screen);
           await cameraTrigger.removeEventListener('click', camera);
           await watchTrigger.removeEventListener('click', watch);
           is_shared = true;
@@ -180,6 +202,7 @@
           localVideo.hidden = false;
           local_sign.hidden = false;
           await screenTrigger.removeEventListener('click', screen);
+          await cameraTrigger.removeEventListener('click', camera);
           await watchTrigger.removeEventListener('click', watch);
           is_shared = true;
           const roomId = await $("#rooms").val() + 0;
@@ -239,8 +262,25 @@
                       window.postMessage({ direction: "stream_event", message: "ended" }, "*");
                     }, { once: true });
                   });
-                }).catch(err => {
+                }).catch(async err => {
                   console.error(err);
+                  switch (err.name) {
+                    default:
+                      localVideo.hidden = true;
+                      local_sign.hidden = true;
+                      await screenTrigger.removeEventListener('click', screen);
+                      await cameraTrigger.removeEventListener('click', camera);
+                      await watchTrigger.removeEventListener('click', watch);
+                      is_shared = false;
+                      const roomId = await $("#rooms").val() + 0;
+                      var room = await peer.joinRoom(roomId, {
+                        mode: 'mesh',
+                        stream: null
+                      });
+                      prepare4share(room);
+                      console.log('nyan');
+                      break;
+                  }
                 });
                 break;
               default:
@@ -264,14 +304,33 @@
                       window.postMessage({ direction: "stream_event", message: "ended" }, "*");
                     }, { once: true });
                   });
-                }).catch(err => {
+                }).catch(async err => {
                   console.error(err);
+                  switch (err.name) {
+                    default:
+                      localVideo.hidden = true;
+                      local_sign.hidden = true;
+                      await screenTrigger.removeEventListener('click', screen);
+                      await cameraTrigger.removeEventListener('click', camera);
+                      await watchTrigger.removeEventListener('click', watch);
+                      is_shared = false;
+                      const roomId = await $("#rooms").val() + 0;
+                      var room = await peer.joinRoom(roomId, {
+                        mode: 'mesh',
+                        stream: null
+                      });
+                      prepare4share(room);
+                      console.log('nyan');
+                      break;
+                  }
                 });;
             }
             break;
           case 'camera':
             navigator.mediaDevices.getUserMedia({
-              video: true,
+              video: {
+                facingMode: "environment"
+              },
               audio: true
             }).then(stream => {
               localStream = stream;
@@ -289,8 +348,25 @@
                   window.postMessage({ direction: "stream_event", message: "ended" }, "*");
                 }, { once: true });
               });
-            }).catch(err => {
+            }).catch(async err => {
               console.error(err);
+              switch (err.name) {
+                default:
+                  localVideo.hidden = true;
+                  local_sign.hidden = true;
+                  await screenTrigger.removeEventListener('click', screen);
+                  await cameraTrigger.removeEventListener('click', camera);
+                  await watchTrigger.removeEventListener('click', watch);
+                  is_shared = false;
+                  const roomId = await $("#rooms").val() + 0;
+                  var room = await peer.joinRoom(roomId, {
+                    mode: 'mesh',
+                    stream: null
+                  });
+                  prepare4share(room);
+                  console.log('nyan');
+                  break;
+              }
             });;
             break;
         }
@@ -298,6 +374,7 @@
 
       // share
       async function prepare4share(room) {
+        console.log('prepare');
         roomId_form.disabled = true;
         leaveTrigger.disabled = false;
 
@@ -362,12 +439,6 @@
         async function listen_message(event) {
           switch (event.data.direction) {
             case 'streamId':
-              if (localStream != null) {
-                localStream.getTracks().forEach(function (track) {
-                  track.stop();
-                });
-                localStream = null;
-              }
               await get_user_media(event.data.message, "local_video", "screen");
               var set_interval_id = setInterval(wait, 1000);
               function wait() {
@@ -390,24 +461,45 @@
         };
 
         screenTrigger.addEventListener('click', change2screen);
-        function change2screen() {
+        async function change2screen() {
           localVideo.hidden = false;
           local_sign.hidden = false;
+          if (localStream != null) {
+            await localStream.getTracks().forEach(function (track) {
+              track.stop();
+            });
+            localStream = null;
+          }
           switch (browser) {
             case 'chrome':
               window.postMessage("share");
               break;
             default:
-              get_user_media("", "local_video", 'screen');
+              window.postMessage({ direction: "streamId", message: "" }, "*");
           }
           is_shared = true;
         };
 
         cameraTrigger.addEventListener('click', change2camera);
-        function change2camera() {
+        async function change2camera() {
           localVideo.hidden = false;
           local_sign.hidden = false;
-          get_user_media("", "local_video", 'camera');
+          if (localStream != null) {
+            await localStream.getTracks().forEach(function (track) {
+              track.stop();
+            });
+            localStream = null;
+          }
+          await get_user_media("", "local_video", 'camera');
+          var set_interval_id = setInterval(wait, 1000);
+          function wait() {
+            if (localStream != null) {
+              clearInterval(set_interval_id);
+              room.replaceStream(localStream);
+              room.send('share');
+              console.log("replace");
+            }
+          }
           is_shared = true;
         };
 

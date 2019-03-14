@@ -16,7 +16,7 @@
   "dependencies": {
     "fs": "0.0.1-security",
     "handlebars": "^4.0.5",
-    "jquery": "^2.1.4",
+    "jquery": ">=3.0.0",
     "path": "^0.12.7",
     "peerjs": "^0.3.14",
     "skyway-js": "^1.1.20",
