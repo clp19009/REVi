@@ -37,7 +37,7 @@
   </div>
 
   <div style="width: 100%; height: 10%; min-height: 85px; position: absolute;">
-    <div class="container" style="position: absolute; top: 110%; right: 0; left:0;">
+    <div class="container" style="position: absolute; top: 110%; right: 0; left: 0;">
       <div class="video-container" id="video-container">
         <div class="local">
           <video id="local_video" autoplay muted>
@@ -512,8 +512,9 @@
           local_sign.hidden = true;
           is_shared = false;
           if (localStream != null) {
-            await localStream.getTracks().forEach(function (track) {
-              track.stop();
+            await localStream.getTracks().forEach(async function (track) {
+              await track.stop();
+              localStream.removeTrack(track);
             });
           }
           room.send("watch");
