@@ -97,7 +97,7 @@
       const browser = await get_browser(window.navigator.userAgent.toLowerCase());
       console.log(browser);
 
-      socket.emit('message', 'key_request');
+      socket.emit('request', 'key_request');
       socket.on('api_key', function (data) {
         peer = new Peer({
           key: data.key,

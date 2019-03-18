@@ -78,7 +78,7 @@ io.sockets.on('connection', function (socket) {
     socket.join(room);
   });
 
-  socket.on('message', function (data) {
+  socket.on('request', function (data) {
     switch (data) {
       case 'key_request':
         io.emit('api_key', { key: api_key });
