@@ -154,15 +154,7 @@
           await watchTrigger.removeEventListener('click', watch);
           console.log('watch');
           is_shared = false;
-          const roomId = await $("#rooms").val() + 0;
-          if (!peer.open) {
-            return;
-          }
-          var room = await peer.joinRoom(roomId, {
-            mode: 'mesh',
-            stream: null
-          });
-          prepare4share(room);
+          join_room("watch");
         };
 
         screenTrigger.addEventListener('click', screen, { once: true });
@@ -173,7 +165,6 @@
           await cameraTrigger.removeEventListener('click', camera);
           await watchTrigger.removeEventListener('click', watch);
           is_shared = true;
-          const roomId = await $("#rooms").val() + 0;
           switch (browser) {
             case 'chrome':
               window.postMessage("share");
@@ -181,23 +172,7 @@
             default:
               get_user_media("", "local_video", "screen");
           }
-          if (!peer.open) {
-            console.log('peer is not opened');
-            return;
-          }
-          var set_interval_id = setInterval(wait, 1000);
-          async function wait() {
-            console.log("wait");
-            if (localStream != null) {
-              console.log("break");
-              clearInterval(set_interval_id);
-              var room = await peer.joinRoom(roomId, {
-                mode: 'mesh',
-                stream: localStream
-              });
-              prepare4share(room);
-            }
-          }
+          join_room("screen");
         };
 
         cameraTrigger.addEventListener('click', camera, { once: true });
@@ -208,26 +183,38 @@
           await cameraTrigger.removeEventListener('click', camera);
           await watchTrigger.removeEventListener('click', watch);
           is_shared = true;
-          const roomId = await $("#rooms").val() + 0;
           get_user_media("", "local_video", "camera");
-          if (!peer.open) {
-            console.log('peer is not opened');
-            return;
-          }
-          var set_interval_id = setInterval(wait, 1000);
-          async function wait() {
-            console.log("wait");
-            if (localStream != null) {
-              console.log("break");
-              clearInterval(set_interval_id);
-              var room = await peer.joinRoom(roomId, {
-                mode: 'mesh',
-                stream: localStream
-              });
-              prepare4share(room);
-            }
-          }
+          join_room("camera");
         };
+      }
+
+      async function join_room(mode) {
+        switch (mode) {
+          case "screen":
+          case "camera":
+            var set_interval_id = setInterval(wait, 1000);
+            async function wait() {
+              console.log("wait");
+              if (localStream != null) {
+                console.log("break");
+                clearInterval(set_interval_id);
+                var room = await peer.joinRoom($("#rooms").val() + 0, {
+                  mode: 'mesh',
+                  stream: localStream
+                });
+                prepare4share(room);
+              }
+            }
+            break;
+          case "watch":
+            var room = await peer.joinRoom($("#rooms").val() + 0, {
+              mode: 'mesh',
+              stream: null
+            });
+            prepare4share(room);
+            break;
+          default:
+        }
       }
 
       // capture
