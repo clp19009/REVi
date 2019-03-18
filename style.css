@@ -1,5 +1,5 @@
 ﻿body {
-  background-color: #141414;
+  background-color: #212121;
 }
 
 h1 {
@@ -42,9 +42,19 @@ video {
     top: 10px;
     left: 10px;
     text-align: center;
-    color: #141414;
+    color: #212121;
     line-height: 250%;
+    color: white;
     background-color: black;
-    filter: alpha(opacity=80);
     opacity: 0.8;
   }
+
+.form {
+  color: white;
+  display: inline;
+  border-style: none none solid;
+  border-color: #01579B;
+  background-color: #212121;
+  position: absolute;
+  text-align: center;
+}
