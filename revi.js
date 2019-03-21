@@ -67,22 +67,35 @@ function readFileHandler(fileName, contentType, isBinary, response) {
 
 const io = socketio.listen(server);
 const api_key = "55578595-05e9-4b88-bf24-5e93617f3ff0";
+var names = {};
 
 io.sockets.on('connection', function (socket) {
   var room = '';
   var name = '';
 
   socket.on('client_to_server_join', function (data) {
-    console.log("new join @ " + data.value);
-    room = data.value;
+    console.log('Room: ' + data.room + ' Name: ' + data.name + ' PeerID: ' + data.peerId);
+    room = data.room;
+    name = data.name;
     socket.join(room);
+    if (names[data.room] == null)
+      names[data.room] = {};
+    names[data.room][data.peerId] = data.name;
+    console.log(names);
   });
 
-  socket.on('request', function (data) {
-    switch (data) {
-      case 'key_request':
-        io.emit('api_key', { key: api_key });
-        break;
-    }
+  socket.on('key_request', function (data) {
+    io.to(socket.id).emit('api_key', { key: api_key });
+  });
+
+  socket.on('name_request', function (data) {
+    io.to(socket.id).emit('name', { name: names[data.room][data.peerId], peerId: data.peerId });
+  });
+
+  socket.on('client_to_server_exit', function (data) {
+    delete names[data.room][data.peerId];
+    if (Object.keys(names[data.room]).length == 0)
+      delete names[data.room];
+    console.log(names);
   });
 });

@@ -33,11 +33,11 @@ video {
   text-align: center;
 }
 
-.local {
+.video_area {
   position: relative;
 }
 
-  .local span {
+  .video_area span {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -47,6 +47,7 @@ video {
     color: white;
     background-color: black;
     opacity: 0.8;
+    z-index: 999;
   }
 
 .form {
