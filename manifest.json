@@ -9,27 +9,27 @@
   "theme_color": "#242424",
   "icons": [
     {
-      "src": "https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Frevi.png?1552328090802",
+      "src": "image/revi_manifest.png",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Frevi.png?1552328090802",
+      "src": "image/revi_manifest.png",
       "sizes": "152x152",
       "type": "image/png"
     },
     {
-      "src": "https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Frevi.png?1552328090802",
+      "src": "image/revi_manifest.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Frevi.png?1552328090802",
+      "src": "image/revi_manifest.png",
       "sizes": "256x256",
       "type": "image/png"
     },
     {
-      "src": "https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Frevi.png?1552328090802",
+      "src": "image/revi_manifest.png",
       "sizes": "512x512",
       "type": "image/png"
     }

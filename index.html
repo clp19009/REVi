@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="shortcut icon" href="https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Ffavicon.ico?1552289454711">
-  <link rel="apple-touch-icon" href="https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Frevi.png?1552328090802" />
+  <link rel="shortcut icon" href="image/revi.png">
+  <link rel="apple-touch-icon" href="image/revi_manifest.png" />
   <link rel="manifest" href="manifest.json">
   <script>
     window.addEventListener('load', function () {
@@ -27,7 +27,7 @@
 
 <body>
   <div style="width: 100%; height: 10%; min-height: 85px; position: fixed; z-index: 999; background-color: rgba(42, 42, 42, 0.8);">
-    <img src="https://cdn.glitch.com/96450832-6fe3-4117-ab8e-3ee9479c71dd%2Frevi.png?1552328090802" style="text-align: center; display: inline; height: 100%; object-fit: contain; position: absolute; left: 2%;">
+    <img src="image/revi.png" style="text-align: center; display: inline; height: 100%; object-fit: contain; position: absolute; left: 2%;">
     <input type="tel" class="form" id="rooms" style="top: 5px; bottom: 55%; left: 27%; width: 35.5%;" placeholder="Room ID" required>
     <input type="text" class="form" id="name" style="top: 5px; bottom: 55%; left: 63%; width: 35.5%;" placeholder="Name" required>
     <button type="button" class="btn fa fa-tv" id="screen" style="color: white; background-color: #212121; text-align: center; font-size: 150%; position: absolute; bottom: 5px; left: 27%; width: 17.5%;"></button>
@@ -124,11 +124,13 @@
 
       // apply name
       socket.on("name", function (data) {
-        console.log(data.name);
-        const video = document.getElementById(data.peerId);
-        const name = document.createElement('span');
-        name.innerText = data.name;
-        video.appendChild(name);
+        if (data.name != null) {
+          console.log(data.name);
+          const video = document.getElementById(data.peerId);
+          const name = document.createElement('span');
+          name.innerText = data.name;
+          video.appendChild(name);
+        }
       });
 
       // functions ///////////////////////////////////////////////////
@@ -286,7 +288,7 @@
                 const is_screen = window.confirm('あなたが共有したいのはスクリーン全体ですか?');
                 navigator.mediaDevices.getUserMedia({
                   video: { mediaSource: is_screen ? 'screen' : 'window' },
-                  audio: true
+                  audio: { mediaSource: 'audioCapture'}
                 }).then(stream => {
                   localStream = stream;
                   document.getElementById(videoId).srcObject = localStream;
@@ -326,11 +328,12 @@
             }
             break;
           case 'camera':
+            const is_mic = window.confirm('マイク入力を共有しますか?');
             navigator.mediaDevices.getUserMedia({
               video: {
                 facingMode: "environment"
               },
-              audio: true
+              audio: is_mic
             }).then(stream => {
               localStream = stream;
               document.getElementById(videoId).srcObject = localStream;
@@ -383,9 +386,10 @@
             console.log("null stream");
           const newVideo = document.createElement('video');
           newVideo.setAttribute('id', stream.peerId + 'video');
+          newVideo.autoplay = true;
           newVideo.controls = true;
           newVideo.srcObject = stream;
-          await newVideo.play().catch(console.error);
+          // await newVideo.play().catch(console.error);
           const area = document.createElement('div');
           area.appendChild(newVideo);
           area.setAttribute('class', 'video_area');
@@ -399,9 +403,10 @@
           console.log(peerId);
           console.log("remove");
           remoteVideo = document.getElementById(peerId + 'video');
-          remoteVideo.srcObject.getTracks().forEach(track => track.stop());
-          remoteVideo.srcObject = null;
-          remoteVideo.remove();
+          if (remoteVideo != null) {
+            remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+            remoteVideo.remove();
+          }
           Array.from(document.getElementById(peerId).getElementsByTagName('span')).forEach(sign => {
             console.log("remove_sign");
             sign.remove();
@@ -412,7 +417,6 @@
           console.log("remove");
           await Array.from(remoteVideos.getElementsByTagName('video')).forEach(remoteVideo => {
             remoteVideo.srcObject.getTracks().forEach(track => track.stop());
-            remoteVideo.srcObject = null;
             remoteVideo.remove();
           });
           Array.from(remoteVideos.getElementsByTagName('span')).forEach(sign => {
