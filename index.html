@@ -128,6 +128,16 @@
       // apply name
       socket.on("name", function (data) {
         if (data.name != null) {
+          const list = document.getElementById('name_list');
+          const name = document.createElement('div');
+          name.innerText = data.name;
+          name.id = data.peerId + 'name';
+          list.appendChild(name);
+        }
+      });
+
+      socket.on("name4stream", function (data) {
+        if (data.name != null) {
           console.log(data.name);
           const video = document.getElementById(data.peerId);
           if (video != null) {
@@ -135,14 +145,6 @@
             name.innerText = data.name;
             video.appendChild(name);
           }
-        }
-
-        if (data.name != null) {
-          const list = document.getElementById('name_list');
-          const name = document.createElement('div');
-          name.innerText = data.name;
-          name.id = data.peerId + 'name';
-          list.appendChild(name);
         }
       });
 
@@ -408,7 +410,7 @@
             area.setAttribute('id', stream.peerId);
             remoteVideos.append(area);
 
-            socket.emit("name_request", { room: $("#rooms").val() + 0, peerId: stream.peerId });
+            socket.emit("name_request4stream", { room: $("#rooms").val() + 0, peerId: stream.peerId });
           }
         });
 
