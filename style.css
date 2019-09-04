@@ -41,19 +41,22 @@ video {
   margin-bottom: 10px;
 }
 
-  .video_area span {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    text-align: center;
-    color: white;
-    z-index: 998;
-    font-size: 20px;
-  }
+.video_area span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  text-align: center;
+  color: white;
+  z-index: 998;
+  font-size: 20px;
+}
 
 .name_list {
   color: white;
+  background-color: #424242;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
 
