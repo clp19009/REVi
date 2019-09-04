@@ -81,7 +81,6 @@ io.sockets.on('connection', function (socket) {
     if (names[data.room] == null)
       names[data.room] = {};
     names[data.room][data.peerId] = data.name;
-    io.to(socket.id).emit('join', { name: data.name });
   });
 
   socket.on('key_request', function (data) {
@@ -98,5 +97,4 @@ io.sockets.on('connection', function (socket) {
       delete names[data.room];
     console.log('exit: ' + names);
   });
-  io.to(socket.id).emit('exit', { name: data.name });
 });

@@ -132,15 +132,11 @@
           const name = document.createElement('span');
           name.innerText = data.name;
           video.appendChild(name);
-        }
-      });
 
-      socket.on("exit", function (data) {
-        if (data.name != null) {
-          const name = document.createElement('span');
-          name.innerText = data.name;
-          document.getElementById("name_list").appendChild(name);
+          const list = document.getElementById('name_list');
+          list.appendChild(name);
         }
+
       });
 
       // functions ///////////////////////////////////////////////////
