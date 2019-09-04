@@ -146,7 +146,7 @@
 
       socket.on("remove_name", function (data) {
         var name = document.getElementById(data.peerId + 'name');
-        name.remove();
+        if (name != null) name.remove();
       });
 
       // functions ///////////////////////////////////////////////////
