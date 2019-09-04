@@ -102,9 +102,9 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('client_to_server_exit', function (data) {
+    console.log('exit: ' + names[data.room][data.peerId]);
     delete names[data.room][data.peerId];
     if (Object.keys(names[data.room]).length == 0)
       delete names[data.room];
-    console.log('exit: ' + names);
   });
 });

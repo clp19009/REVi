@@ -411,7 +411,7 @@
         });
 
         room.on('peerJoin', peerId => {
-            socket.emit("name_request", { room: $("#rooms").val() + 0, peerId: peerId });
+          socket.emit("name_request", { room: $("#rooms").val() + 0, peerId: peerId });
         });
 
         room.on('peerLeave', peerId => {
@@ -461,7 +461,7 @@
 
         room.on('data', async ({ data, src }) => {
           console.log(data);
-          var remoteVideo = document.getElementById(src);
+          var remoteVideo = document.getElementById(src + 'video');
           if (remoteVideo != null) {
             switch (data) {
               case "watch":
