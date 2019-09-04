@@ -130,9 +130,11 @@
         if (data.name != null) {
           console.log(data.name);
           const video = document.getElementById(data.peerId);
-          const name = document.createElement('span');
-          name.innerText = data.name;
-          video.appendChild(name);
+          if (video != null) {
+            const name = document.createElement('span');
+            name.innerText = data.name;
+            video.appendChild(name);
+          }
         }
 
         if (data.name != null) {
@@ -408,6 +410,10 @@
 
             socket.emit("name_request", { room: $("#rooms").val() + 0, peerId: stream.peerId });
           }
+        });
+
+        room.on('peerLeave', peerId => {
+            socket.emit("name_request", { room: $("#rooms").val() + 0, peerId: peerId });
         });
 
         room.on('peerLeave', peerId => {
