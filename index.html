@@ -137,6 +137,7 @@
       });
 
       socket.on("name4stream", function (data) {
+        console.log('name4stream');
         if (data.name != null) {
           console.log(data.name);
           const video = document.getElementById(data.peerId);
@@ -398,7 +399,6 @@
         room.on('stream', async stream => {
           console.log(stream.peerId);
           if (stream != null) {
-            console.log(stream.peerId);
             const newVideo = document.createElement('video');
             newVideo.setAttribute('id', stream.peerId + 'video');
             newVideo.autoplay = true;
