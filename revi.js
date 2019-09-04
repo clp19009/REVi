@@ -83,8 +83,9 @@ io.sockets.on('connection', function (socket) {
     names[data.room][data.peerId] = data.name;
 
     Object.keys(names[data.room]).forEach(function (key) {
-      var peerId = this[key];
-      io.to(socket.id).emit('name', { name: names[data.room][data.peerId], peerId: peerId });
+      var value = this[key];
+      if (key != data.peerId)
+        io.to(socket.id).emit('name', { name: names[data.room][key], peerId: value });
     }, names[data.room]);
   });
 
