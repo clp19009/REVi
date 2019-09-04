@@ -135,7 +135,7 @@
         }
       });
 
-      socket.on("join", function (data) {
+      socket.on("exit", function (data) {
         if (data.name != null) {
           const name = document.createElement('span');
           name.innerText = data.name;
