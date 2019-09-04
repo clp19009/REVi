@@ -81,6 +81,11 @@ io.sockets.on('connection', function (socket) {
     if (names[data.room] == null)
       names[data.room] = {};
     names[data.room][data.peerId] = data.name;
+
+    Object.keys(names[data.room]).forEach(function (key) {
+      var peerId = this[key];
+      io.to(socket.id).emit('name', { name: names[data.room][data.peerId], peerId: peerId });
+    }, names[data.room]);
   });
 
   socket.on('key_request', function () {
@@ -92,7 +97,6 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('name_request_stream', function (data) {
-    console.log('name_request_stream');
     io.to(socket.id).emit('name_stream', { name: names[data.room][data.peerId], peerId: data.peerId });
   });
 
