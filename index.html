@@ -427,8 +427,9 @@
             });
           }
 
-          var name_tag = document.getElementById(peerId + 'name');
-          if (name_tag != null) name_tag.remove();
+          Array.from(nameList.getElementsByTagName('div')).forEach(name => {
+            if (name.id == peerId) name.remove();
+          });
         });
 
         room.once('close', async () => {
