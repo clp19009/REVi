@@ -83,7 +83,7 @@ io.sockets.on('connection', function (socket) {
     names[data.room][data.peerId] = data.name;
   });
 
-  socket.on('key_request', function (data) {
+  socket.on('key_request', function () {
     io.to(socket.id).emit('api_key', { key: api_key });
   });
 
@@ -92,10 +92,11 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('name_request4stream', function (data) {
+    console.log('name_request4stream');
     io.to(socket.id).emit('name4stream', { name: names[data.room][data.peerId], peerId: data.peerId });
   });
 
-  socket.on('client_to_server_exit', function (data) {
+  socket.on('client_to_server_exit'1, function (data) {
     delete names[data.room][data.peerId];
     if (Object.keys(names[data.room]).length == 0)
       delete names[data.room];
