@@ -393,21 +393,21 @@
 
         room.on('stream', async stream => {
           console.log(stream.peerId);
-          if (stream == null)
-            console.log("null stream");
-          const newVideo = document.createElement('video');
-          newVideo.setAttribute('id', stream.peerId + 'video');
-          newVideo.autoplay = true;
-          newVideo.controls = true;
-          newVideo.srcObject = stream;
-          // await newVideo.play().catch(console.error);
-          const area = document.createElement('div');
-          area.appendChild(newVideo);
-          area.setAttribute('class', 'video_area');
-          area.setAttribute('id', stream.peerId);
-          remoteVideos.append(area);
+          if (stream != null) {
+            const newVideo = document.createElement('video');
+            newVideo.setAttribute('id', stream.peerId + 'video');
+            newVideo.autoplay = true;
+            newVideo.controls = true;
+            newVideo.srcObject = stream;
+            // await newVideo.play().catch(console.error);
+            const area = document.createElement('div');
+            area.appendChild(newVideo);
+            area.setAttribute('class', 'video_area');
+            area.setAttribute('id', stream.peerId);
+            remoteVideos.append(area);
 
-          socket.emit("name_request", { room: $("#rooms").val() + 0, peerId: stream.peerId });
+            socket.emit("name_request", { room: $("#rooms").val() + 0, peerId: stream.peerId });
+          }
         });
 
         room.on('peerLeave', peerId => {
