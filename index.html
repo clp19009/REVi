@@ -412,7 +412,7 @@
           }
         });
 
-        room.on('peerLeave', peerId => {
+        room.on('peerJoin', peerId => {
             socket.emit("name_request", { room: $("#rooms").val() + 0, peerId: peerId });
         });
 
