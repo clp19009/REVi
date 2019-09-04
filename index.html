@@ -428,7 +428,7 @@
           }
 
           Array.from(nameList.getElementsByTagName('div')).forEach(name => {
-            if (name.id == peerId) name.remove();
+            if (name.id == peerId + 'name') name.remove();
           });
         });
 
