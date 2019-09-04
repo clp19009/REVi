@@ -36,7 +36,7 @@
   </div>
 
   <div style="width: 100%; height: 10%; min-height: 85px; position: absolute;">
-    <div class="container" style="position: absolute; top: 110%; right: 0; left: 0;">
+    <div class="container" style="position: absolute; top: 110%; right: 0%; left: 50%;">
       <div class="video-container" id="video-container">
         <div class="video_area">
           <video id="local_video" autoplay muted>
@@ -48,6 +48,9 @@
         </div>
         <div id="remote_videos"></div>
       </div>
+    </div>
+    <div class="container" style="position: absolute; top: 110%; right: 50%; left: 0%;">
+      <span id="name_list"></span>
     </div>
   </div>
 
@@ -129,6 +132,14 @@
           const name = document.createElement('span');
           name.innerText = data.name;
           video.appendChild(name);
+        }
+      });
+
+      socket.on("join", function (data) {
+        if (data.name != null) {
+          const name = document.createElement('span');
+          name.innerText = data.name;
+          document.getElementById("name_list").appendChild(name);
         }
       });
 
