@@ -81,7 +81,6 @@ io.sockets.on('connection', function (socket) {
     if (names[data.room] == null)
       names[data.room] = {};
     names[data.room][data.peerId] = data.name;
-    console.log('join: ' + names);
   });
 
   socket.on('key_request', function (data) {
