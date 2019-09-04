@@ -396,7 +396,7 @@
         roomId_form.disabled = true;
         leaveTrigger.disabled = false;
 
-        room.on('stream', async stream => {
+        room.on('stream', stream => {
           console.log(stream.peerId);
           if (stream != null) {
             const newVideo = document.createElement('video');
