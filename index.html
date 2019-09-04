@@ -138,6 +138,7 @@
           const list = document.getElementById('name_list');
           const name = document.createElement('div');
           name.innerText = data.name;
+          name.id = data.peerId + 'name';
           list.appendChild(name);
         }
       });
@@ -420,6 +421,9 @@
               sign.remove();
             });
           }
+
+          var name_tag = document.getElementById(peerId + 'name');
+          if (name_tag != null) name_tag.remove();
         });
 
         room.once('close', async () => {
@@ -430,6 +434,9 @@
           });
           Array.from(remoteVideos.getElementsByTagName('span')).forEach(sign => {
             sign.remove();
+          });
+          Array.from(nameList.getElementsByTagName('div')).forEach(name => {
+            name.remove();
           });
           if (localStream != null) {
             await localStream.getTracks().forEach(function (track) {
