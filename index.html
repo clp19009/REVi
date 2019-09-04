@@ -144,6 +144,12 @@
         }
       });
 
+      socket.on("remove_name", function (data) {
+        Array.from(nameList.getElementsByTagName('div')).forEach(name => {
+          if (name.id == data.peerId + 'name') name.remove();
+        });
+      });
+
       // functions ///////////////////////////////////////////////////
 
       // get browser information
@@ -426,10 +432,6 @@
               sign.remove();
             });
           }
-
-          Array.from(nameList.getElementsByTagName('div')).forEach(name => {
-            if (name.id == peerId + 'name') name.remove();
-          });
         });
 
         room.once('close', async () => {
