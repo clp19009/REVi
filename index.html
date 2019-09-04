@@ -129,7 +129,7 @@
       socket.on("name", function (data) {
         const list = document.getElementById('name_list');
         const name = document.createElement('div');
-        name.innerText = data.name != null ? data.name : '名無しさん';
+        name.innerText = data.name != '' ? data.name : '名無しさん';
         name.className = 'name_list';
         name.id = data.peerId + 'name';
         list.appendChild(name);
@@ -139,7 +139,7 @@
         const video = document.getElementById(data.peerId);
         if (video != null) {
           const name = document.createElement('span');
-          name.innerText = data.name != null ? data.name : '名無しさん';
+          name.innerText = data.name != '' ? data.name : '名無しさん';
           video.appendChild(name);
         }
       });

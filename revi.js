@@ -80,7 +80,7 @@ io.sockets.on('connection', function (socket) {
     socket.join(room);
     if (names[data.room] == null)
       names[data.room] = {};
-    names[data.room][data.peerId] = data.name;
+    names[data.room][data.peerId] = data.name != '' ? data.name : "–¼–³‚µ‚³‚ñ";
 
     Object.keys(names[data.room]).forEach(function (key) {
       var value = this[key];
