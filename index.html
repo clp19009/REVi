@@ -415,11 +415,11 @@
           if (remoteVideo != null) {
             remoteVideo.srcObject.getTracks().forEach(track => track.stop());
             remoteVideo.remove();
+            Array.from(document.getElementById(peerId).getElementsByTagName('span')).forEach(sign => {
+              console.log("remove_sign");
+              sign.remove();
+            });
           }
-          Array.from(document.getElementById(peerId).getElementsByTagName('span')).forEach(sign => {
-            console.log("remove_sign");
-            sign.remove();
-          });
         });
 
         room.once('close', async () => {
