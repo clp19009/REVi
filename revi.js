@@ -91,12 +91,12 @@ io.sockets.on('connection', function (socket) {
     io.to(socket.id).emit('name', { name: names[data.room][data.peerId], peerId: data.peerId });
   });
 
-  socket.on('name_request4stream', function (data) {
-    console.log('name_request4stream');
-    io.to(socket.id).emit('name4stream', { name: names[data.room][data.peerId], peerId: data.peerId });
+  socket.on('name_request_stream', function (data) {
+    console.log('name_request_stream');
+    io.to(socket.id).emit('name_stream', { name: names[data.room][data.peerId], peerId: data.peerId });
   });
 
-  socket.on('client_to_server_exit'1, function (data) {
+  socket.on('client_to_server_exit', function (data) {
     delete names[data.room][data.peerId];
     if (Object.keys(names[data.room]).length == 0)
       delete names[data.room];

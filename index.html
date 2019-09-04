@@ -136,7 +136,7 @@
         }
       });
 
-      socket.on("name4stream", function (data) {
+      socket.on("name_stream", function (data) {
         console.log('name4stream');
         if (data.name != null) {
           console.log(data.name);
@@ -411,7 +411,7 @@
             area.setAttribute('id', stream.peerId);
             remoteVideos.append(area);
 
-            socket.emit("name_request4stream", { room: $("#rooms").val() + 0, peerId: stream.peerId });
+            socket.emit("name_request_stream", { room: $("#rooms").val() + 0, peerId: stream.peerId });
           }
         });
 
