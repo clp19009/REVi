@@ -49,7 +49,7 @@
         <div id="remote_videos"></div>
       </div>
     </div>
-    <div class="name_list" style="position: absolute; top: 110%; right: 90%; left: 5px;">
+    <div style="position: absolute; top: 110%; right: 90%; left: 5px;">
       <div id="name_list"></div>
     </div>
   </div>
@@ -131,6 +131,7 @@
           const list = document.getElementById('name_list');
           const name = document.createElement('div');
           name.innerText = data.name;
+          name.className = 'name_list';
           name.id = data.peerId + 'name';
           list.appendChild(name);
         }
