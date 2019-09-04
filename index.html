@@ -127,26 +127,20 @@
 
       // apply name
       socket.on("name", function (data) {
-        if (data.name != null) {
-          const list = document.getElementById('name_list');
-          const name = document.createElement('div');
-          name.innerText = data.name;
-          name.className = 'name_list';
-          name.id = data.peerId + 'name';
-          list.appendChild(name);
-        }
+        const list = document.getElementById('name_list');
+        const name = document.createElement('div');
+        name.innerText = data.name != null ? data.name : '名無しさん';
+        name.className = 'name_list';
+        name.id = data.peerId + 'name';
+        list.appendChild(name);
       });
 
       socket.on("name_stream", function (data) {
-        console.log('name4stream');
-        if (data.name != null) {
-          console.log(data.name);
-          const video = document.getElementById(data.peerId);
-          if (video != null) {
-            const name = document.createElement('span');
-            name.innerText = data.name;
-            video.appendChild(name);
-          }
+        const video = document.getElementById(data.peerId);
+        if (video != null) {
+          const name = document.createElement('span');
+          name.innerText = data.name != null ? data.name : '名無しさん';
+          video.appendChild(name);
         }
       });
 
